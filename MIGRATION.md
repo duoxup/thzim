@@ -50,6 +50,16 @@ Check off each item as it is migrated. Rules that apply to every code file:
       on OP3 against the `chicane_beta_x_scan.py` convergence table at
       beta_x = 30 m (2.63 um corrected eps_x and 14 mm residual eta here
       against 2.61 um / 12.4 mm there on the conditioned beam).
+- [x] `quadruplet.py` — `QuadrupletGeom.d_inter` now also takes a tuple of
+      three (Q1-Q2, Q2-Q3, Q3-Q4), so the superradiant M3 -- T1.Q3 plus the T2
+      triplet across the 0.92 m switch region, gaps (0.92, 0.30, 0.30) -- is
+      the same solver as M1. A scalar `d_inter` is unchanged (regression: the
+      OP3 M1 solve reproduces its k1 exactly). Found while doing that: the
+      min-peak-beta tie-break is DEGENERATE when the peak sits at the exit
+      (every exact solution then has peak beta_x = the 30 m target), so
+      rounding the launch Twiss to three decimals lands on a different but
+      equivalent solution; not a defect, but do not expect k1 to be stable
+      under small changes of the inputs there.
 - [x] `quadruplet.py` ← `match/four_quads_match_api.py`. Verified **bit-identical**
       to the original on two cases (k1, exit Twiss and peak beta all differ by
       exactly 0; gradients by 1e-12, from `scipy.constants` replacing the
@@ -307,6 +317,24 @@ Check off each item as it is migrated. Rules that apply to every code file:
       `segments.py`: the `.npz` beam dumps (ASTRA files via partdist instead,
       one format at every plane), the 20k subsample and the `chirp_scale` hook
       (an unused experiment).
+- [x] `OP{1..4}/m3_quadruplet_match.py` — new; the final match P2 -> P3 over
+      `thzim.quadruplet`, replacing `seg3` of `beamline_design/segments.py`
+      for BOTH branches. OP1/OP2: the four-quad M3 after the dogleg, as
+      before (d_in 0.1 / 0.3 m). OP3/OP4: **a design change.** `segments.py`
+      ran the retired six-knob crossing solver over M2 + switch region + M3;
+      its "round" constraint was emittance-WEIGHTED (equal beta), which on
+      the P2 beam (eps_x 2-4x eps_y after the chicane) is 95-160 % from
+      size-round, so `thzim.two_triplet` finds no crossing for it -- checked
+      by scanning both legs over +-20 T/m with several seeds and by
+      evaluating the original knobs with `match_with`. The M3-SR line is
+      therefore run with T1.Q1 and T1.Q2 switched off and T1.Q3 + T2 solved
+      as a quadruplet with gaps (0.92, 0.30, 0.30): linear solutions exist
+      for both OPs at <= 4.5 T/m. The P3 targets are carried as constants
+      (the FEL-side choice of record: (3.38, 0, 0.007, 0), (0.53, 0, 0.53,
+      0), (2.58, 0, 0.07, 0), (9.8, 0, 0.006, 0)); matching is on the
+      PROJECTED P2 Twiss as in `segments.py`. Each script writes
+      `outputs/OP<n>/beams/p3.ast` and prints the P3 longitudinal summary
+      for the Genesis4 input.
 - [x] Separate `knobs/` tables — deliberately dropped. They duplicated values
       without carrying enough lattice context. Geometry and selected strengths
       are kept in the executable per-OP scripts instead.

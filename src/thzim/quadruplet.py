@@ -90,31 +90,50 @@ class QuadrupletGeom:
     """Four-quad matching section (all lengths in m).
 
     START d_in Q1 d_inter Q2 d_inter Q3 d_inter Q4 d_out END. All four quads
-    share one length and one spacing -- this is a matching section, not a
-    footprint-constrained insertion like `ChicaneGeom` or `DoglegGeom`, so its
-    geometry is set by what fits between two interface planes.
+    share one length -- this is a matching section, not a footprint-constrained
+    insertion like `ChicaneGeom` or `DoglegGeom`, so its geometry is set by
+    what fits between two interface planes.
+
+    `d_inter` is one spacing shared by the three gaps (the M1 station) or a
+    tuple of three, (Q1-Q2, Q2-Q3, Q3-Q4), when the four powered quads are not
+    evenly spaced. The superradiant branch's M3 is the case: T1's last quad
+    plus the T2 triplet across the 0.92 m switch region, with T1's first two
+    quads switched off, so the gaps are (0.92, 0.30, 0.30) and the dead quads
+    fold into `d_in`.
     """
 
     lq: float = 0.10              # quad magnetic length
     d_in: float = 0.30            # section start -> Q1
-    d_inter: float = 0.30         # between adjacent quads
+    d_inter: object = 0.30        # between adjacent quads: one value or three
     d_out: float = 0.40           # Q4 -> section end
 
     @property
+    def d_inters(self):
+        """The three inter-quad drifts (Q1-Q2, Q2-Q3, Q3-Q4) [m]."""
+        if np.ndim(self.d_inter) == 0:
+            return (float(self.d_inter),) * 3
+        if len(self.d_inter) != 3:
+            raise ValueError("d_inter must be one spacing or a tuple of three")
+        return tuple(float(d) for d in self.d_inter)
+
+    @property
     def length(self):
-        return self.d_in + 4.0 * self.lq + 3.0 * self.d_inter + self.d_out
+        return self.d_in + 4.0 * self.lq + sum(self.d_inters) + self.d_out
 
     def element_spans(self):
         """(s_start, s_end, name) of each quadrupole, s from the START marker."""
         spans, s = [], self.d_in
-        for i in range(4):
+        for i, gap in enumerate(self.d_inters + (0.0,)):
             spans.append((s, s + self.lq, f"Q{i + 1}"))
-            s += self.lq + self.d_inter
+            s += self.lq + gap
         return spans
 
     def summary(self):
+        gaps = self.d_inters
+        d_inter = (f"{gaps[0]:.3f}" if len(set(gaps)) == 1
+                   else "(" + ", ".join(f"{d:.3f}" for d in gaps) + ")")
         return (f"Quadruplet  (Lq={self.lq:.3f}, d_in={self.d_in:.3f}, "
-                f"d_inter={self.d_inter:.3f}, d_out={self.d_out:.3f} m)\n"
+                f"d_inter={d_inter}, d_out={self.d_out:.3f} m)\n"
                 f"  length={self.length:.4f} m")
 
 
@@ -139,10 +158,11 @@ def build_lattice(geom, k1s, sliced=False, nsl=20):
         def Q(k, eid):
             return [oc.Quadrupole(l=geom.lq, k1=k, eid=eid)]
 
+    g12, g23, g34 = geom.d_inters
     seq = ([oc.Marker(eid="START")] + D(geom.d_in)
-           + Q(k1s[0], "Q1") + D(geom.d_inter)
-           + Q(k1s[1], "Q2") + D(geom.d_inter)
-           + Q(k1s[2], "Q3") + D(geom.d_inter)
+           + Q(k1s[0], "Q1") + D(g12)
+           + Q(k1s[1], "Q2") + D(g23)
+           + Q(k1s[2], "Q3") + D(g34)
            + Q(k1s[3], "Q4") + D(geom.d_out)
            + [oc.Marker(eid="END")])
     return oc.MagneticLattice(seq)

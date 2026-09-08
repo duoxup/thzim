@@ -63,6 +63,10 @@ exit, P3 undulator entrance.
      beam. Writes `outputs/OP<n>/beams/p2.ast` and two figures: the
      evolution (sizes, dispersion, dispersion-corrected emittance,
      compression) and the longitudinal phase space at P1 and P2.
+  6. `OP{1,2}/m3_quadruplet_match.py` — the final focus: the four-quad M3
+     after the dogleg onto the P3 target of record, over `thzim.quadruplet`
+     (linear solve + SC re-match + SC track). Writes
+     `outputs/OP<n>/beams/p3.ast`, the input of `repro/03_fel/`.
 
   **Superradiant branch, chicane (OP3, OP4)** — a chicane is achromatic by
   symmetry, so only the entrance Twiss is left, and it splits in two: `y` is an
@@ -85,12 +89,22 @@ exit, P3 undulator entrance.
     Writes `outputs/OP<n>/beams/p2.ast` and the same two figures as the
     dogleg script. The chicane is achromatic by symmetry, so the residual
     dispersion it reports is entirely collective.
+  - `m3_quadruplet_match.py` — the final focus onto the P3 target of record.
+    The hardware after the chicane is two triplets around the 0.92 m switch
+    region; the script switches T1's first two quads OFF and solves T1.Q3 +
+    T2 as a quadruplet with gaps (0.92, 0.30, 0.30) m. The two-triplet
+    crossing route is not used here because the P2 beam is far from round
+    (eps_x is 2-4x eps_y after the chicane) and no crossing exists for it;
+    four quads against four Twiss numbers needs no roundness. Writes
+    `outputs/OP<n>/beams/p3.ast`.
 
   OP4 is the collective-dominated point (0.6 nC at 21.8 MeV against OP3's
   0.2 nC at 39.9 MeV): the trade-off has the same shape and the same `beta_x`
   wins, but it is worth several um of emittance instead of one.
 - P0 → P3 driver script — entry point running the per-OP line
-  (to migrate, see MIGRATION.md)
+  (to migrate, see MIGRATION.md). Until it lands, the per-OP chain is run
+  script by script in the order above; every plane's beam is an ASTRA file
+  under `outputs/OP<n>/beams/` (`p1.ast`, `p2.ast`, `p3.ast`).
 
 Input: `data/OP{1..4}_50k.dist`. Output: per-segment beam dumps and the
 `p3.ast` beams consumed by `repro/03_fel/`.
