@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-r"""OP3 chicane: track the matched P1 beam through the compressor to P2.
+r"""OP4 chicane: track the matched P1 beam through the compressor to P2.
 
     P1 (chicane entrance)   B1  d  B2  l2/2 | C | l2/2  B3  d  B4   P2
 
-The lattice is the OP3 design of record (`ChicaneGeom` below, the same
+The lattice is the OP4 design of record (`ChicaneGeom` below, the same
 instance `m1_quadruplet_match.py` computed its y target from), so nothing is
 solved here: the beam written by that script is read back and tracked with
 space charge and CSR, and the result is what the final match (M3) will see.
@@ -33,8 +33,8 @@ Figure 1, five panels against s (x blue, y red; dotted = linear reference):
 Figure 2 is the longitudinal phase space at P1 and P2 with the current profile
 under each, the direct picture of what the compressor did to the chirp.
 
-Input:  `outputs/OP3/beams/p1.ast` (from `m1_quadruplet_match.py`, SC on)
-Output: `outputs/OP3/beams/p2.ast`, consumed by the final match.
+Input:  `outputs/OP4/beams/p1.ast` (from `m1_quadruplet_match.py`, SC on)
+Output: `outputs/OP4/beams/p2.ast`, consumed by the final match.
 
 Run:  python chicane_track.py     (needs `pip install -e .` at the repo root
       plus `partdist`; ~20 s with SC + CSR at 50k particles)
@@ -54,14 +54,14 @@ from thzim.triplet import as_ocelot, beam_energy_gev
 from thzim.utils import apply_style, output_dir, save
 
 # --------------------------- user settings ---------------------------
-REPO = Path(__file__).resolve().parents[3]
-P1_DIST = output_dir(REPO, "OP3", "beams") / "p1.ast"
-P2_DIST = output_dir(REPO, "OP3", "beams") / "p2.ast"
-FIGS = output_dir(REPO, "OP3", "figures")
+REPO = Path(__file__).resolve().parents[2]
+P1_DIST = output_dir(REPO, "OP4", "beams") / "p1.ast"
+P2_DIST = output_dir(REPO, "OP4", "beams") / "p2.ast"
+FIGS = output_dir(REPO, "OP4", "figures")
 
-# OP3 design of record; must match m1_quadruplet_match.py, whose y target was
+# OP4 design of record; must match m1_quadruplet_match.py, whose y target was
 # computed from this geometry at lead = 0.2 m.
-CHICANE = ChicaneGeom(theta_deg=16.69, l_bz=0.10, l_dz=0.75, lead=0.20)
+CHICANE = ChicaneGeom(theta_deg=19.05, l_bz=0.10, l_dz=0.75, lead=0.20)
 
 SC = True                 # space charge in the collective track
 CSR = True                # coherent synchrotron radiation in the collective track
@@ -243,8 +243,8 @@ def main():
 
     apply_style()
     save(figure_evolution(evo, evo0, lattice, collective), FIGS,
-         "fig_OP3_chicane_track")
-    save(figure_lps(as_ocelot(dist), pa), FIGS, "fig_OP3_chicane_lps")
+         "fig_OP4_chicane_track")
+    save(figure_lps(as_ocelot(dist), pa), FIGS, "fig_OP4_chicane_lps")
     plt.show()
 
 

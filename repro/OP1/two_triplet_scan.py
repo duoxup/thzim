@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-r"""OP2 upstream match — step 1 of 2: scan both legs into the dogleg.
+r"""OP1 upstream match — step 1 of 2: scan both legs into the dogleg.
 
 The SASE branch delivers the P0 beam to the dogleg entrance through two quad
 stations with the (switched-off) chicane footprint between them:
@@ -11,28 +11,10 @@ T1's first quad and T2's last. Because both legs arrive round, agreeing on the
 beam SIZE at two screens in the middle means agreeing on the full covariance in
 both planes -- two knobs for four Twiss constraints. This script scans those two
 and shows what each choice does. It does NOT choose: read the figures, pick a
-row, and put its gradients into `two_triplet_e2e.py`.
+(g1_fwd, g1_bwd), and put it into `two_triplet_e2e.py`.
 
 The target is not a free parameter -- it is the dogleg entrance Twiss, computed
-here from `thzim.dogleg` exactly as `dogleg_forward.py` does. The magnets are
-the same as OP1, at 39.4 MeV instead of 15.4 and at the scan-optimum ki = -22
-instead of the hand-set -38. OP2 takes the dogleg entrance marker at the first
-bend (`d_in = 0`), so its target is defined at that plane.
-
-## What is different from OP1
-
-The P0 beam. At OP1 it arrives at beta = 49 m, sigma = 2.3 mm, diverging; at
-OP2 it arrives at beta = 0.34 m, sigma = 0.10 mm, CONVERGING -- it goes through
-its own waist (0.094 mm at s = 0.14 m, still 0.16 m short of Q1) before this
-section can touch it. Nothing here changes that waist; the pinch to watch for
-is the one in the MIDDLE. And the gradients are an order of magnitude larger:
-2.5x the rigidity, and a beam that has to be caught right after a waist.
-
-With `d_in = 0`, the useful crossing lies on the NEGATIVE T2 branch near
-`g1_bwd = -5.6 T/m`; a scan limited to the old positive branch cannot see it.
-The analytic scan has several crossings, so the independent middle screen is
-essential. On the selected weak-T1 branch the SC scan leaves one consistent
-candidate, with a 0.42 % middle-screen residual.
+here from `thzim.dogleg` exactly as `dogleg_forward.py` does.
 
 ## What to look for when choosing
 
@@ -43,28 +25,39 @@ good.
   is a parabola, so at fixed emittance two free parameters remain and a
   different (waist size, waist position) can pass through the same two points.
   The screens NOT used to form the crossing are the check, and the table's
-  `free scr` column reports it.
+  `free scr` column reports it. A small value identifies the physical match;
+  a large value identifies a two-screen parabola coincidence.
 * **Is it good?** A real crossing can still drive a hard waist in the middle,
-  which at 1 nC is where the emittance would be lost even at 40 MeV. The
-  backward leg here is steep: across the local window its first-screen size
-  falls from about 0.96 to 0.08 mm. The selected crossing stays away from that
-  end of the branch; figure 1 makes this check visible before the e2e run.
+  which at 1 nC and 15.9 MeV is where the emittance would be lost. Figure 1
+  shows each leg's envelope, so a candidate that pinches can be seen and
+  rejected before anything is tracked. That is the whole reason this step is
+  separate from the simulation.
 
 A curve can have gaps where no round solution was found. `leg_scan` tries three
-seeds per point (the previous point's answer, the given seed, and its mirror);
-what is left after that is genuinely infeasible and is dropped to `nan`.
+seeds per point (the previous point's answer, the given seed, and its mirror)
+because one fixed seed provably misses solutions on this geometry; what is left
+after that is genuinely infeasible and is dropped to `nan`.
 
-Space charge: both leg scans track with SC. The round knobs (g2, g3) remain a
-LINEAR solve: explicitly enabling `SC_KNOBS` did not materially move this
-crossing, while the selected candidate is already round to 2.0 % under SC.
-Every scan point still reports the measured SC roundness as a diagnostic.
+Space charge: both leg scans track with SC. The round knobs (g2, g3) are solved
+LINEARLY, on the argument that they enforce a ratio between the planes and an
+already-round beam takes a symmetric SC kick. That argument is adequate here --
+4.5 % worst deviation at the selected working point -- but every scan point
+reports it anyway,
+measured on the track that ran regardless, and `SC_KNOBS = True` re-solves them
+under space charge if it ever stops holding.
+
+Watch that column. The first run of this script reported 13-27 % and the leg
+envelopes did something impossible: sigma growing and then shrinking inside a
+drift, which no repulsive force can produce. It was a broken partdist -> ocelot
+conversion, not physics -- see `thzim.triplet.as_ocelot` for what was wrong and
+how it was caught.
 
 `SC_SCAN = False` runs the whole scan analytically in seconds -- use it to check
 the windows first; its candidates are NOT the answer, and it reports no
 roundness column because there is no track to read it from.
 
 Run:  python two_triplet_scan.py    (needs `pip install -e .` at the repo root
-      plus `partdist`; ~8 min with SC_SCAN = True, ~10 s without)
+      plus `partdist`; ~6 min with SC_SCAN = True, ~10 s without)
 Next: two_triplet_e2e.py, with the gradients chosen here.
 """
 
@@ -86,29 +79,31 @@ from thzim.two_triplet import (TwoTripletGeom, backward_beam, find_crossings,
 from thzim.utils import apply_style, output_dir, save
 
 # --------------------------- user settings ---------------------------
-REPO = Path(__file__).resolve().parents[3]
-DIST = REPO / "data" / "OP2_50k.dist"
-FIGS = output_dir(REPO, "OP2", "figures")
+REPO = Path(__file__).resolve().parents[2]
+DIST = REPO / "data" / "OP1_50k.dist"
+FIGS = output_dir(REPO, "OP1", "figures")
 
-EKIN_MEV = 39.4                 # OP2
-DOGLEG = DoglegGeom(theta_deg=40.0, rho=0.542, delta_x=2.0, d_in=0.0, d_out=0.3)
-KI = -22.0                      # OP2 design of record (the ki-scan optimum);
-                                # sets the target Twiss
+EKIN_MEV = 15.4                 # OP1
+DOGLEG = DoglegGeom(theta_deg=40.0, rho=0.542, delta_x=2.0, d_in=0.2, d_out=0.1)
+KI = -38.0                      # OP1 design of record; sets the target Twiss
 
-# The section in physical order, with the same hardware as OP1. Group A is a
-# triplet in a four-slot station, so its dead fourth slot folds into the gap:
-# 0.30 + 0.10 + 3.00 = 3.40 m. Screens sit at 10 %, 50 % and 90 % of the gap.
+# The section in physical order. Group A is a triplet in a four-slot station,
+# so its dead fourth slot folds into the gap: 0.30 + 0.10 + 3.00 = 3.40 m.
+# The screens are fixed at 10 %, 50 % and 90 % of that gap.
 GEOM = TwoTripletGeom(t1_lq=(0.10, 0.10, 0.10), t1_drifts=(0.30, 0.30, 0.30),
                       t2_lq=(0.10, 0.10, 0.10), t2_drifts=(0.30, 0.30, 0.40),
                       gap=3.40,
                       screens=(0.34, 1.70, 3.06))
 
-G1_FWD = np.linspace(-3.50, -2.00, 11)    # T1 first quad [T/m]
-G1_BWD = np.linspace(-5.75, -5.45, 11)    # T2 last quad  [T/m]
+G1_FWD = np.linspace(-0.40, -0.10, 15)     # T1 first quad [T/m]
+G1_BWD = np.linspace(0.0, 0.4, 15)      # T2 last quad  [T/m]
 SCREEN_PAIR = (0, -1)                     # the rest are the independent check
 
 SC_SCAN = True                            # False = analytic dry run
-SC_KNOBS = False                          # verified sufficient for this branch
+SC_KNOBS = False                          # solve g2, g3 under space charge too.
+                                          # Read the SC roundness column first:
+                                          # if it is tens of per cent this MUST
+                                          # be True (minutes per point).
 SC_MESH = (31, 31, 31)
 SC_UNIT_STEP = 0.05
 # ---------------------------------------------------------------------
@@ -234,7 +229,7 @@ def main():
         dl = solve_achromat_quads(DOGLEG, KI, energy_gev=energy_gev)
         target = solve_entrance_twiss(dl).as_tuple()
 
-    print(f"target = the OP2 dogleg entrance Twiss at ki = {KI:+.1f} m^-2:")
+    print(f"target = the OP1 dogleg entrance Twiss at ki = {KI:+.1f} m^-2:")
     print(f"  bx={target[0]:.4f} ax={target[1]:+.4f}  "
           f"by={target[2]:.4f} ay={target[3]:+.4f}")
     print()
@@ -306,7 +301,7 @@ def main():
               "NOT used to form the\ncrossing. A few per cent is a real match; "
               "tens of per cent is a parabola coincidence.\nOf the real ones, "
               "prefer the candidate whose figure-1 envelopes do NOT pinch to a "
-              "tiny\nwaist in the middle -- that is where a 1 nC beam at 40 "
+              "tiny\nwaist in the middle -- that is where a 1 nC beam at 15.9 "
               "MeV loses its emittance.")
         devs = [c["match"].round_dev for c in cands
                 if c["match"].round_dev is not None
@@ -339,9 +334,9 @@ def main():
     # ------------------------------ plots ------------------------------
     apply_style()
     save(figure_legs(fwd_rows, bwd_rows, dist, bwd, SC_SCAN), FIGS,
-         'fig_OP2_two_triplet_legs')
+         'fig_OP1_two_triplet_legs')
     save(figure_crossing(fwd_rows, bwd_rows, cands, pair), FIGS,
-         'fig_OP2_two_triplet_crossing')
+         'fig_OP1_two_triplet_crossing')
     plt.show()
 
 

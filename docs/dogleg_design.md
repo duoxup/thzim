@@ -29,7 +29,7 @@ global optimisation:
 The orthogonality is not an approximation. Sweeping `ki` from −70 to −6 m⁻²
 forces `ko` to retune over 43.9 → 67.9 m⁻², while `R56` moves by
 1.3 × 10⁻⁴ mm — five orders of magnitude below the value itself. See
-`repro/02_beamline/OP1/dogleg_ki_scan.py`, panel (b).
+`repro/OP1/dogleg_ki_scan.py`, panel (b).
 
 ## Stage A — sizing: R56 target → geometry
 
@@ -116,7 +116,7 @@ is block diagonal and the planes are solved **independently**. Per plane:
 `thzim.dogleg.solve_entrance_twiss(dl)` returns the four entrance values plus
 the peak betas. Note the peak betas fall out of step 2 itself; propagating the
 solved Twiss forward afterwards reproduces them exactly and derives nothing new.
-`repro/02_beamline/OP1/dogleg_forward.py` does that propagation as a
+`repro/OP1/dogleg_forward.py` does that propagation as a
 visualisation and a self-check.
 
 ## Stage D — choosing `ki`
@@ -215,8 +215,8 @@ beam property may appear. The distribution first enters **downstream**, in the
 upstream matching section that has to deliver the entrance Twiss:
 
 ```
-repro/02_beamline/OP{1,2}/two_triplet_scan.py   -> both legs scanned with SC, the crossings tabulated
-repro/02_beamline/OP{1,2}/two_triplet_e2e.py    -> P0 tracked to the dogleg entrance at the chosen gradients
+repro/OP{1,2}/two_triplet_scan.py   -> both legs scanned with SC, the crossings tabulated
+repro/OP{1,2}/two_triplet_e2e.py    -> P0 tracked to the dogleg entrance at the chosen gradients
 ```
 
 `thzim.two_triplet` re-runs Stages B–C at the same `ki`, so the target is
@@ -231,9 +231,9 @@ scripts run against the repository alone.
 |---|---|---|
 | A | `tools/dogleg_geometry_map.py` | R56 over (θ, ρ); solves ρ for an R56 target |
 | A | `tools/dogleg_offset_map.py` | Δx on the same axes; the secondary constraint |
-| B–D | `repro/02_beamline/OP{1,2}/dogleg_ki_scan.py` | scans `ki`; per value solves `ko` and the entrance Twiss, scores, recommends |
-| B–C | `repro/02_beamline/OP{1,2}/dogleg_forward.py` | re-solves at the chosen `ki` and propagates the Twiss through, with a self-check |
-| next | `repro/02_beamline/OP{1,2}/two_triplet_scan.py`, `two_triplet_e2e.py` | the upstream section that has to DELIVER the entrance Twiss (`thzim.two_triplet`) |
+| B–D | `repro/OP{1,2}/dogleg_ki_scan.py` | scans `ki`; per value solves `ko` and the entrance Twiss, scores, recommends |
+| B–C | `repro/OP{1,2}/dogleg_forward.py` | re-solves at the chosen `ki` and propagates the Twiss through, with a self-check |
+| next | `repro/OP{1,2}/two_triplet_scan.py`, `two_triplet_e2e.py` | the upstream section that has to DELIVER the entrance Twiss (`thzim.two_triplet`) |
 | — | `src/thzim/dogleg.py` | all of the physics; the scripts above only call and plot |
 
 ## Open items

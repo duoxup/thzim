@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-r"""OP1 dogleg — step 1 of 2: scan the inner-pair strength ki.
+r"""OP2 dogleg — step 1 of 2: scan the inner-pair strength ki.
 
 The dogleg geometry is already fixed (rho and theta come from the R56 target,
 see tools/dogleg_geometry_map.py; Delta_x from the layout). What is left free is
@@ -31,6 +31,21 @@ only reweights the score in (a): peak beta is optical, but the size that has to
 fit is sigma^2 = eps beta, so with unequal emittances the roundest-beta ki is
 not the roundest-beam ki. Leave it at 1.0 to keep the design distribution-free.
 
+OP2 shares the dogleg hardware with OP1 and, as this scan reproduces, its
+optics as well -- every column below except R56 is bit-identical to OP1's,
+despite the 2.6x energy ratio. Ocelot's `k1` is a geometric strength [m^-2] and
+the bend is given by angle, so the transfer matrix carries no energy at all.
+Energy enters in exactly two places: the R56 velocity term in panel (b), and the
+`k1` -> T/m conversion printed by `DoglegLattice.summary()`. The lead-out drift
+`d_out` differs too (0.3 m here against OP1's 0.1 m) and likewise changes
+nothing: it sits downstream of everything this scan solves.
+
+The scan is therefore not re-derivation for its own sake -- it is the check that
+the shared hardware really is shared, and it is where OP2's as-built `ki` comes
+from. Unlike OP1, whose `ki = -38` was set by hand, OP2 was built at whatever
+this scan returns (`design_dogleg` in the original pipeline ran exactly this
+loop), so the winner marked below IS the design of record.
+
 Run:  python dogleg_ki_scan.py     (needs `pip install -e .` at the repo root)
 Next: dogleg_forward.py, with `ki` set to the value chosen here.
 """
@@ -45,21 +60,23 @@ from thzim.dogleg import (DoglegGeom, solve_achromat_quads,
 from thzim.utils import apply_style, output_dir, save
 
 # --------------------------- user settings ---------------------------
-REPO = Path(__file__).resolve().parents[3]
-FIGS = output_dir(REPO, "OP1", "figures")
+REPO = Path(__file__).resolve().parents[2]
+FIGS = output_dir(REPO, "OP2", "figures")
 
-GEOM = DoglegGeom(theta_deg=40.0, rho=0.542, delta_x=2.0, d_in=0.2, d_out=0.1)
-EKIN_MEV = 15.4             # OP1. The optics is energy-independent; only the
+GEOM = DoglegGeom(theta_deg=40.0, rho=0.542, delta_x=2.0, d_in=0.0, d_out=0.3)
+EKIN_MEV = 39.4             # OP2. The optics is energy-independent; only the
                             # gradients and the R56 velocity term are not.
 KI_SCAN = np.linspace(-70.0, -6.0, 33)      # inner-pair strengths [1/m^2]
 EMIT_RATIO = 1.0            # eps_y/eps_x; 1.0 = distribution-free scoring
-KI_NOMINAL = -38.0          # design of record, drawn for comparison; None = skip
+KI_NOMINAL = -38.0          # OP1's hand-set value, drawn for comparison only --
+                            # OP2's own design of record is the scan winner;
+                            # None = skip
 # ---------------------------------------------------------------------
 
 
 def main():
     energy_gev = (EKIN_MEV + 0.51099895) * 1e-3
-    print(f"OP1 dogleg ki scan: theta={GEOM.theta_deg:.2f} deg, "
+    print(f"OP2 dogleg ki scan: theta={GEOM.theta_deg:.2f} deg, "
           f"rho={GEOM.rho:.4f} m, Delta_x={GEOM.delta_x:.2f} m, "
           f"E_kin={EKIN_MEV:.1f} MeV")
     print(f"geometry: L_bend={GEOM.L_bend:.4f}  L_gap={GEOM.L_gap:.4f}  "
@@ -127,7 +144,7 @@ def main():
               label=rf"best $k_i$ = {ki_best:+.1f} m$^{{-2}}$")
     if KI_NOMINAL is not None:
         ax_s.axvline(KI_NOMINAL, color="0.4", lw=1.0, ls=":",
-                     label=rf"nominal $k_i$ = {KI_NOMINAL:+.1f} m$^{{-2}}$")
+                     label=rf"OP1 $k_i$ = {KI_NOMINAL:+.1f} m$^{{-2}}$")
     ax_s.set_ylabel(r"peak $\beta$ [$m$]")   # x is shared with (b) below
     ax_s.legend(loc="upper center", fontsize=7, framealpha=0.85)
     ax_s.set_title("(a) what the ki choice costs", fontsize=10)
@@ -149,7 +166,7 @@ def main():
                    fontsize=10)
 
     plt.show()
-    save(fig, FIGS, 'fig_OP1_dogleg_ki_scan')
+    save(fig, FIGS, 'fig_OP2_dogleg_ki_scan')
 
 
 if __name__ == "__main__":

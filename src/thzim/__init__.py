@@ -10,7 +10,7 @@ Core modules:
 - ``thzim.compressor`` — SC + CSR tracking through either compressor, with
   the along-s beam monitor and the exit-plane report
 - ``thzim.record``   — the design of record per operating point, as data:
-  section geometry, selected strengths, P3 target; what ``repro/02_beamline/
+  section geometry, selected strengths, P3 target; what ``repro/
   run_line.py`` rebuilds the line from
 
 Two modules match a beam onto a target Twiss, by different means:

@@ -60,7 +60,7 @@ from thzim.quadruplet import bmag
 from thzim.triplet import as_ocelot, beam_energy_gev
 from thzim.utils import apply_style, output_dir, save
 
-REPO = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[1]
 C_X, C_Y, C_Z = "tab:blue", "tab:red", "tab:green"   # x blue, y red, z green
 
 

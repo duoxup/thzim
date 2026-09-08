@@ -1,46 +1,54 @@
 #!/usr/bin/env python3
-r"""OP4 chicane: track the matched P1 beam through the compressor to P2.
+r"""OP2 dogleg: track the matched P1 beam through the compressor to P2.
 
-    P1 (chicane entrance)   B1  d  B2  l2/2 | C | l2/2  B3  d  B4   P2
+    P1   d_in  B1(+t)  d1  QO  d2  QI  d3 | C | d3  QI  d2  QO  d1  B2(-t)  d_out   P2
 
-The lattice is the OP4 design of record (`ChicaneGeom` below, the same
-instance `m1_quadruplet_match.py` computed its y target from), so nothing is
-solved here: the beam written by that script is read back and tracked with
-space charge and CSR, and the result is what the final match (M3) will see.
+The lattice is the OP2 design of record: the `DoglegGeom` and `ki` below are
+the ones `two_triplet_e2e.py` computed its entrance target from, and `ko`
+is re-solved from the achromat condition exactly as there (`thzim.dogleg.
+solve_achromat_quads`), so the target and the lattice cannot drift apart.
+Nothing else is solved: the beam written by `two_triplet_e2e.py` is read back
+and tracked with space charge and CSR, and the result is what the final
+match (M3) will see.
 
 Two tracks are run on the same beam and drawn together:
 
   * the LINEAR reference -- SC and CSR off. The compression itself is optics
-    (R56 times the chirp), so this is the bunch length the lattice delivers on
-    its own, and the residual dispersion the achromat leaves by symmetry.
+    (R56 times the chirp), so this is the bunch length the lattice delivers
+    on its own, and the residual dispersion the achromat match leaves.
   * the COLLECTIVE track -- SC + CSR on. The difference is what the charge
     costs: the emittance it adds, the dispersion it leaves unclosed, the
-    energy it radiates away, and how much of the compression it spoils.
+    energy it radiates away, and how much of the compression it spoils. At
+    1 nC and 39 MeV it is milder than at OP1, but the same magnets are
+    2.5x stronger in T/m and the entrance marker sits AT the first bend
+    (`d_in = 0`), so there is no lead-in drift to let the beam relax.
 
 Figure 1, five panels against s (x blue, y red; dotted = linear reference):
 
   (a) rms size: the total sigma_x and its BETATRON part, dispersion removed.
-      Inside the chicane the dispersive term dominates (eta reaches ~0.26 m),
-      so the total says nothing about the optics; the betatron size is what
-      the space charge acts on.
+      Between the dipoles eta reaches ~0.2 m and the dispersive term
+      dominates, so the total says nothing about the optics; the betatron
+      size is what the quads and the space charge act on.
   (b) the statistical dispersion eta(s), closing to its exit residual.
   (c) normalised emittance: eps_n,x DISPERSION-CORRECTED, and eps_n,y. The
-      projected eps_n,x is not drawn -- it swings to ~70 um and back with eta,
-      which is bookkeeping, not growth; its exit value is in the table.
+      projected eps_n,x is not drawn -- it swings up and back with eta, which
+      is bookkeeping, not growth; its exit value is in the table.
   (d) the compression: sigma_z on the left axis, peak current on the right.
   (e) the lattice, drawn by ocelot.
 
 Figure 2 is the longitudinal phase space at P1 and P2 with the current profile
 under each, the direct picture of what the compressor did to the chirp.
 
-Input:  `outputs/OP4/beams/p1.ast` (from `m1_quadruplet_match.py`, SC on)
-Output: `outputs/OP4/beams/p2.ast`, consumed by the final match.
+Input:  `outputs/OP2/beams/p1.ast` (from `two_triplet_e2e.py`, SC on)
+Output: `outputs/OP2/beams/p2.ast`, consumed by the final match.
 
-Run:  python chicane_track.py     (needs `pip install -e .` at the repo root
-      plus `partdist`; ~20 s with SC + CSR at 50k particles)
-Prev: m1_quadruplet_match.py
+Run:  python dogleg_track.py     (needs `pip install -e .` at the repo root
+      plus `partdist`; ~1 min with SC + CSR at 50k particles)
+Prev: two_triplet_e2e.py
 """
 
+import contextlib
+import io
 from pathlib import Path
 
 import numpy as np
@@ -48,24 +56,25 @@ import matplotlib.pyplot as plt
 
 from partdist import (from_ocelot_particle_array, read_astra_distribution,
                       write_astra_distribution)
-from thzim.chicane import ChicaneGeom, build_lattice, element_spans, r56_z_exact
 from thzim.compressor import beam_report, track_compressor
+from thzim.dogleg import DoglegGeom, element_spans, solve_achromat_quads
 from thzim.triplet import as_ocelot, beam_energy_gev
 from thzim.utils import apply_style, output_dir, save
 
 # --------------------------- user settings ---------------------------
-REPO = Path(__file__).resolve().parents[3]
-P1_DIST = output_dir(REPO, "OP4", "beams") / "p1.ast"
-P2_DIST = output_dir(REPO, "OP4", "beams") / "p2.ast"
-FIGS = output_dir(REPO, "OP4", "figures")
+REPO = Path(__file__).resolve().parents[2]
+P1_DIST = output_dir(REPO, "OP2", "beams") / "p1.ast"
+P2_DIST = output_dir(REPO, "OP2", "beams") / "p2.ast"
+FIGS = output_dir(REPO, "OP2", "figures")
 
-# OP4 design of record; must match m1_quadruplet_match.py, whose y target was
-# computed from this geometry at lead = 0.2 m.
-CHICANE = ChicaneGeom(theta_deg=19.05, l_bz=0.10, l_dz=0.75, lead=0.20)
+# OP2 design of record; must match two_triplet_e2e.py, whose entrance target
+# was computed from this geometry and ki.
+DOGLEG = DoglegGeom(theta_deg=40.0, rho=0.542, delta_x=2.0, d_in=0.0, d_out=0.3)
+KI = -22.0                      # inner-pair k1 [1/m^2]; ko follows from the achromat
 
 SC = True                 # space charge in the collective track
 CSR = True                # coherent synchrotron radiation in the collective track
-SC_MESH = (63, 63, 63)    # the convention of chicane_beta_x_scan.py
+SC_MESH = (63, 63, 63)
 UNIT_STEP = 0.02          # navigator step [m]; also the record spacing
 CSR_NBIN = 300
 
@@ -95,8 +104,9 @@ def figure_evolution(evo, evo0, lattice, collective):
         gridspec_kw={"height_ratios": [3, 3, 3, 3, 1]})
 
     for ax in (ax_s, ax_d, ax_e, ax_z):
-        for a, b, _ in element_spans(CHICANE):
-            ax.axvspan(a, b, color="#c8c8c8", alpha=0.35, lw=0, zorder=0)
+        for a, b, kind in element_spans(DOGLEG):
+            ax.axvspan(a, b, color="#c8c8c8" if kind == "bend" else "#8ecae6",
+                       alpha=0.40, lw=0, zorder=0)
 
     # linestyle explicit throughout: colour = plane, dash = which curve
     ax_s.plot(s, evo["sig_x"] * 1e3, color=C_X, lw=1.5, ls="-",
@@ -155,8 +165,8 @@ def figure_evolution(evo, evo0, lattice, collective):
     ax_l.set_yticks([])
     for side in ("left", "right", "top"):
         ax_l.spines[side].set_visible(False)
-    ax_l.set_xlim(-0.02 * CHICANE.length, 1.02 * CHICANE.length)
-    ax_l.set_xlabel(r"$s$ [$m$]   (P1 $\to$ B1 B2 $|$ B3 B4 $\to$ P2)")
+    ax_l.set_xlim(-0.02 * DOGLEG.length, 1.02 * DOGLEG.length)
+    ax_l.set_xlabel(r"$s$ [$m$]   (P1 $\to$ B1 QO QI $|$ QI QO B2 $\to$ P2)")
     return fig
 
 
@@ -192,14 +202,12 @@ def figure_lps(pa_in, pa_out, nbin=200):
 def main():
     dist = read_astra_distribution(str(P1_DIST))
     energy_gev = beam_energy_gev(dist)
-    lattice = build_lattice(CHICANE)
+    with contextlib.redirect_stdout(io.StringIO()):
+        dl = solve_achromat_quads(DOGLEG, KI, energy_gev=energy_gev)
+    lattice = dl.lattice
     collective = SC or CSR
 
-    print(CHICANE.summary())
-    print(f"  R56 from the Ocelot map at {energy_gev*1e3:.2f} MeV: "
-          f"{r56_z_exact(CHICANE, energy_gev)*1e3:+.2f} mm (z convention, "
-          f"velocity term included)")
-    print(f"  dipole field {CHICANE.field(energy_gev):.4f} T")
+    print(dl.summary())
     print(f"  beam: {P1_DIST.relative_to(REPO)}, n={len(dist)}, "
           f"Q={abs(dist.get_data('Q').sum())*1e9:.3f} nC, "
           f"E={energy_gev*1e3:.2f} MeV")
@@ -237,14 +245,14 @@ def main():
     print(f"  {'':2s}sigma_z {r_lin['sig_z']*1e3:.4f} -> {r_out['sig_z']*1e3:.4f} mm "
           f"({(r_out['sig_z']/r_lin['sig_z']-1)*100:+.1f} %), residual eta "
           f"{r_lin['eta']*1e3:+.2f} -> {r_out['eta']*1e3:+.2f} mm")
-    print(f"  peak sizes along the chicane: sigma_x {evo['sig_x'].max()*1e3:.2f} mm "
+    print(f"  peak sizes along the dogleg: sigma_x {evo['sig_x'].max()*1e3:.2f} mm "
           f"(betatron {evo['sig_xb'].max()*1e3:.2f}), sigma_y "
           f"{evo['sig_y'].max()*1e3:.2f} mm; peak eta {evo['eta'].max()*1e3:.1f} mm")
 
     apply_style()
     save(figure_evolution(evo, evo0, lattice, collective), FIGS,
-         "fig_OP4_chicane_track")
-    save(figure_lps(as_ocelot(dist), pa), FIGS, "fig_OP4_chicane_lps")
+         "fig_OP2_dogleg_track")
+    save(figure_lps(as_ocelot(dist), pa), FIGS, "fig_OP2_dogleg_lps")
     plt.show()
 
 

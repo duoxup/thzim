@@ -47,7 +47,7 @@ from thzim.triplet import beam_energy_gev
 from thzim.utils import apply_style, output_dir, save
 
 # --------------------------- user settings ---------------------------
-REPO = Path(__file__).resolve().parents[3]
+REPO = Path(__file__).resolve().parents[2]
 DIST = REPO / "data" / "OP3_50k.dist"
 FIGS = output_dir(REPO, "OP3", "figures")
 P1_DIST = output_dir(REPO, "OP3", "beams") / "p1.ast"

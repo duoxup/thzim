@@ -32,7 +32,7 @@ Check off each item as it is migrated. Rules that apply to every code file:
       `beta_x` belongs to a tracking scan, not to a linear solver.
       The SC/CSR tracking layer (`track_chicane`, `Monitor`) went to
       `compressor.py` (below), generalised to any lattice so the dogleg shares
-      it; the `beta_x` scan is `repro/02_beamline/OP{3,4}/chicane_beta_x_scan.py`.
+      it; the `beta_x` scan is `repro/OP{3,4}/chicane_beta_x_scan.py`.
       Beam loading is partdist's job. Nothing is left to migrate here.
 - [x] `compressor.py` ← the tracking half of `chicane_design/no_quad/
       chicane_study_lib.py` (`track_chicane`, `Monitor`, `emit_proj`,
@@ -190,7 +190,7 @@ Check off each item as it is migrated. Rules that apply to every code file:
       to copy, and the e2e scripts take `T1_G` / `T2_G` instead of `G1_FWD` /
       `G1_BWD`. `TwoTripletMatch.lin_round_dev` reports whether what was handed
       in is round, so a typo is caught.
-- [x] `repro/02_beamline/OP{1,2}/two_triplet_scan.py`, `two_triplet_e2e.py` —
+- [x] `repro/OP{1,2}/two_triplet_scan.py`, `two_triplet_e2e.py` —
       new; the upstream match into the dogleg on the real section, split scan /
       choose / simulate. The target is computed from `thzim.dogleg`; geometry
       and selected gradients are retained directly in the scripts. The three
@@ -257,7 +257,7 @@ Check off each item as it is migrated. Rules that apply to every code file:
       waist gives sigma_x = 2.3900 mm against its 2.3901 mm. Affected everything
       that fed a partdist distribution to an SC track — `solve_round_triplet
       (sc=True)`, all of `two_triplet`, `quadruplet`'s SC layer. NOT affected:
-      `repro/02_beamline/OP{3,4}/chicane_beta_x_scan.py`, which go through
+      `repro/OP{3,4}/chicane_beta_x_scan.py`, which go through
       ocelot's own ASTRA adaptor, and `tools/demo_triplet_round_transport.py`,
       whose synthetic beam is centred with a positive charge — which is exactly
       why the demo looked healthy and only the real `.dist` broke.
@@ -312,7 +312,7 @@ Check off each item as it is migrated. Rules that apply to every code file:
       `save_figure_auto_date`
 - [ ] `__init__.py` — export the public API once modules land
 
-## Reproduction — `repro/02_beamline/`
+## Reproduction — `repro/`
 
 - [x] `run_line.py` — the P0 → P3 driver, replacing `beamline_design/
       segments.py` (and the P0 → P3 tracking the FEL-side prep script

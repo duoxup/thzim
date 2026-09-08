@@ -4,7 +4,7 @@ One place that says, per operating point, what the line between the booster
 exit (P0) and the undulator entrance (P3) IS -- the geometry of each section
 and the strengths selected for it -- so that a driver can rebuild it without
 re-running any design step. The values are those the per-OP scripts under
-`repro/02_beamline/` derived and printed; the scripts remain the place where
+`repro/` derived and printed; the scripts remain the place where
 each number is DERIVED (and the place to change one), this module is where the
 result is RECORDED. Where a value follows from another by a deterministic
 solve (the dogleg's outer-pair `ko` from `ki`), it is solved here, not copied.
@@ -220,7 +220,7 @@ class OpRecord:
 
 
 # ----------------------------- the four records -----------------------------
-# Sources: the SC-matched results printed by the repro/02_beamline scripts,
+# Sources: the SC-matched results printed by the repro scripts,
 # runs of 2026-09-08. Geometry is repeated from each script's settings block.
 
 _SASE_M1_GEOM = TwoTripletGeom(t1_lq=(0.10, 0.10, 0.10),

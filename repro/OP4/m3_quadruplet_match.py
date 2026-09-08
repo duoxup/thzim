@@ -73,7 +73,7 @@ from thzim.triplet import as_ocelot, beam_energy_gev
 from thzim.utils import apply_style, output_dir, save
 
 # --------------------------- user settings ---------------------------
-REPO = Path(__file__).resolve().parents[3]
+REPO = Path(__file__).resolve().parents[2]
 P2_DIST = output_dir(REPO, "OP4", "beams") / "p2.ast"
 P3_DIST = output_dir(REPO, "OP4", "beams") / "p3.ast"
 FIGS = output_dir(REPO, "OP4", "figures")

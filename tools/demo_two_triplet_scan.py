@@ -57,7 +57,7 @@ for the tracked version. The candidates it finds are NOT the answer; figure 1's
 envelopes then come from the analytic transport and the panel titles say so.
 
 Case: OP1's P0 beam matched onto the OP1 dogleg entrance Twiss
-(`repro/02_beamline/OP1/dogleg_forward.py`). The section geometry is the one the
+(`repro/OP1/dogleg_forward.py`). The section geometry is the one the
 route was developed against upstream, NOT a fixed part of the machine layout.
 
 Run:  python demo_two_triplet_scan.py   (needs `pip install -e .` at the repo

@@ -16,7 +16,7 @@ separately.
 | Path | Category | Content |
 |---|---|---|
 | `src/thzim/` | Toolchain | Importable library: chicane, compressor, dogleg, maps, quadruplet, record, triplet, two_triplet, utils |
-| `repro/02_beamline/` | Reproduction | Middle optics P0 → P3 design and tracking per working point |
+| `repro/` | Reproduction | Middle optics P0 → P3 design and tracking per working point |
 | `tools/` | Toolchain | Sizing maps, standalone calculators and demos |
 | `data/` | Data | Canonical 50k-particle P0 distributions for OP1–OP4 |
 | `docs/` | Docs | Machine overview; per-subsystem design notes |
@@ -55,11 +55,11 @@ Git.
 
 ```bash
 pip install -e .                                  # plus partdist, see above
-python repro/02_beamline/run_line.py OP3          # P0 -> P3 for one working point
+python repro/run_line.py OP3          # P0 -> P3 for one working point
 ```
 
 `run_line.py` rebuilds the line from the design of record (`src/thzim/record.py`)
 and writes the P1/P2/P3 beams and a summary under `outputs/OP3/line/`. The
-per-OP scripts in `repro/02_beamline/` are where each design value is derived;
+per-OP scripts in `repro/` are where each design value is derived;
 see that directory's README for the order. The P3 beams are the handover to
 the FEL simulation, which is delivered separately.

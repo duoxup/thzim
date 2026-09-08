@@ -66,7 +66,7 @@ from thzim.two_triplet import (TwoTripletGeom, build_lattice, match_with,
 from thzim.utils import apply_style, output_dir, save
 
 # --------------------------- user settings ---------------------------
-REPO = Path(__file__).resolve().parents[3]
+REPO = Path(__file__).resolve().parents[2]
 DIST = REPO / "data" / "OP2_50k.dist"
 FIGS = output_dir(REPO, "OP2", "figures")
 P1_DIST = output_dir(REPO, "OP2", "beams") / "p1.ast"

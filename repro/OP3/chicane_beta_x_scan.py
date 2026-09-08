@@ -96,7 +96,7 @@ from thzim.chicane import ChicaneGeom, chicane_seq, element_spans, matched_y
 from thzim.utils import apply_style, output_dir, save
 
 # --------------------------- user settings ---------------------------
-REPO = Path(__file__).resolve().parents[3]
+REPO = Path(__file__).resolve().parents[2]
 DIST = REPO / "data" / "OP3_50k.dist"
 FIGS = output_dir(REPO, "OP3", "figures")
 

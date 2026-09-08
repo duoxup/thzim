@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-r"""OP2 dogleg — step 2 of 2: the solved lattice at one chosen ki.
+r"""OP1 dogleg — step 2 of 2: the solved lattice at one chosen ki.
 
 Takes the ki picked in dogleg_ki_scan.py, re-runs the two solves, and shows what
 the resulting dogleg actually does: Twiss and dispersion from entrance to exit.
@@ -25,13 +25,6 @@ The entrance Twiss printed here is the hand-off to the upstream match
 (`thzim.two_triplet`, run by `two_triplet_scan.py` in this directory), which is
 where a real distribution finally enters the chain.
 
-OP2 runs the same dogleg hardware as OP1 at 39.4 MeV instead of 15.4, and every
-Twiss quantity drawn here is bit-identical to OP1's at the same ki: `k1` is a
-geometric strength and the bend is given by angle, so nothing in the transfer
-matrix carries energy. What differs is `ki` -- OP1's -38 was set by hand, OP2's
--22 is the ki_scan winner -- which is why the two figures look nothing alike
-even though neither depends on the beam energy. See docs/dogleg_design.md.
-
 Run:  python dogleg_forward.py    (needs `pip install -e .` at the repo root)
 Prev: dogleg_ki_scan.py, which is where KI below comes from.
 """
@@ -46,13 +39,13 @@ from thzim.dogleg import (DoglegGeom, element_spans, solve_achromat_quads,
 from thzim.utils import apply_style, output_dir, save
 
 # --------------------------- user settings ---------------------------
-REPO = Path(__file__).resolve().parents[3]
-FIGS = output_dir(REPO, "OP2", "figures")
+REPO = Path(__file__).resolve().parents[2]
+FIGS = output_dir(REPO, "OP1", "figures")
 
-GEOM = DoglegGeom(theta_deg=40.0, rho=0.542, delta_x=2.0, d_in=0.0, d_out=0.3)
-EKIN_MEV = 39.4             # OP2
-KI = -22.0                  # design of record, and the min-peak choice at
-                            # emit_ratio = 1 (see dogleg_ki_scan.py)
+GEOM = DoglegGeom(theta_deg=40.0, rho=0.542, delta_x=2.0, d_in=0.2, d_out=0.1)
+EKIN_MEV = 15.4             # OP1
+KI = -38.0                  # design of record; -22.0 is the min-peak choice
+                            # at emit_ratio = 1 (see dogleg_ki_scan.py)
 NSL = 30                    # slices per element for the forward Twiss
 BAND_COLORS = {"bend": "#c8c8c8", "QO": "#8ecae6", "QI": "#ffb703"}
 # ---------------------------------------------------------------------
@@ -108,7 +101,7 @@ def main():
                    rf"{dl.Dx_exit*1e3:+.1e} mm", fontsize=10)
 
     plt.show()
-    save(fig, FIGS, 'fig_OP2_dogleg_forward')
+    save(fig, FIGS, 'fig_OP1_dogleg_forward')
 
 
 if __name__ == "__main__":

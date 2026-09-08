@@ -1,4 +1,4 @@
-# Stage 2 — Middle Optics (P0 → P3)
+# Middle Optics (P0 → P3)
 
 Tracks each working point from booster2 exit (P0) through matching sections
 and compressor (chicane or dogleg, depending on branch) to the undulator
@@ -118,10 +118,10 @@ Input: `data/OP{1..4}_50k.dist`. Output: per-segment beam dumps and the
 The design, one OP at a time, from the canonical 50k P0 beam:
 
 ```bash
-python repro/02_beamline/run_line.py OP3            # 3-8 min per OP with SC
-python repro/02_beamline/run_line.py OP1 --input path/to/OP1_1M.dist --out outputs/OP1/line_1M
-python repro/02_beamline/run_line.py OP4 --start p2  # M3 only, from line/p2.ast
-python repro/02_beamline/run_line.py OP2 --no-sc --no-csr   # linear reference
+python repro/run_line.py OP3            # 3-8 min per OP with SC
+python repro/run_line.py OP1 --input path/to/OP1_1M.dist --out outputs/OP1/line_1M
+python repro/run_line.py OP4 --start p2  # M3 only, from line/p2.ast
+python repro/run_line.py OP2 --no-sc --no-csr   # linear reference
 ```
 
 To re-derive a design value, run the per-OP script that owns it (order as
