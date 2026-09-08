@@ -48,7 +48,6 @@ import contextlib
 import io
 
 import numpy as np
-import ocelot as oc
 from ocelot.cpbd.csr import CSR
 from ocelot.cpbd.navi import Navigator
 from ocelot.cpbd.physics_proc import PhysProc
