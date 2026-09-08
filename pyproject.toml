@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "thzim"
+version = "0.1.0"
+description = "THz FEL ideal machine: design toolchain and result-reproduction workflows"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "pandas",
+    "h5py",
+    "ocelot-collab>=25.07",
+]
+
+# Companion repositories (install separately, see README):
+#   partdist
+#   htpipe
+#   paramstudy
+#   postpro
+# Cluster-only requirements: genesis4 + MPI runtime (repro/03_fel)
+
+[tool.setuptools.packages.find]
+where = ["src"]

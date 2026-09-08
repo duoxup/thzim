@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+
+# Generated/intermediate beam distributions; keep only the canonical P0 inputs
+*.dist
+*.ast
+# ... except the canonical 50k-particle P0 inputs, which ship with the repo
+!data/OP*_50k.dist
+
+# Genesis4 I/O
+*.out.h5
+*.par.h5
+*.fld.h5
+genesis.log
+
+# Caches and generated output
+_cache/
+_segments/
+*.npz
+*.log
+
+# Repository-local output root
+outputs/
+
+# Editor / agent local files
+.vscode/
+.claude/settings.local.json
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
