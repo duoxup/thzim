@@ -161,7 +161,7 @@ def _leg_panel(ax, rows, leg, offsets, norm, cmap, beam, xlabel):
         else:
             s, sx, sy = envelope_linear(leg, row["k"], s0x, s0y)
         c = cmap(norm(row["g1"]))
-        # linestyle pinned: the scienceplots "ieee" style cycles linestyles too
+        # linestyle pinned explicitly: colour carries the plane, dash the curve kind
         ax.plot(s, sx * 1e3, color=c, lw=1.2, ls="-")
         ax.plot(s, sy * 1e3, color=c, lw=1.0, ls="--")
     for off in offsets:

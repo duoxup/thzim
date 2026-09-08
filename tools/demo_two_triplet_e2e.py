@@ -143,8 +143,8 @@ def figure_e2e(match, tws, sc):
     ax_s.set_title("(c) rms size (round across the shaded middle)", fontsize=10)
 
     plot_elems(fig, ax_l, lat, legend=False, font_size=8)
-    # the scienceplots "ieee" style dashes patch edges, which turns the element
-    # blocks into hatching; and the numeric y axis means nothing here
+    # element edges are drawn solid whatever the style; and the numeric y axis
+    # means nothing here
     for patch in ax_l.patches:
         patch.set_linestyle("-")
     ax_l.set_yticks([])

@@ -158,7 +158,7 @@ def _leg_panel(ax, rows, leg, offsets, norm, cmap, beam, xlabel):
         else:
             s, sx, sy = envelope_linear(leg, row["k"], s0x, s0y)
         c = cmap(norm(row["g1"]))
-        # linestyle pinned: the scienceplots "ieee" style cycles linestyles too
+        # linestyle pinned explicitly: colour carries the plane, dash the curve kind
         ax.plot(s, sx * 1e3, color=c, lw=1.2, ls="-")
         ax.plot(s, sy * 1e3, color=c, lw=1.0, ls="--")
     for off in offsets:
@@ -206,7 +206,7 @@ def figure_crossing(fwd_rows, bwd_rows, cands, pair):
     fig, ax = plt.subplots(figsize=(4.4, 4.2), layout="constrained")
     # marker/linestyle as keywords, not a fmt string: the fmt would collide with
     # the pinned ls= (matplotlib warns), and ls is pinned because the
-    # scienceplots "ieee" style cycles linestyles
+    # linestyle pinned explicitly, independent of the style's cycle
     ax.plot(f[:, 0], f[:, 1], color="tab:red", marker="o", ms=3.0, lw=1.2,
             ls="-", label="forward (T1)")
     ax.plot(b[:, 0], b[:, 1], color="tab:blue", marker="o", ms=3.0, lw=1.2,

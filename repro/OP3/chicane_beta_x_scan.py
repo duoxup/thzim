@@ -276,9 +276,8 @@ def main():
     ax_z.set_xlim(0.0, GEOM.length)
     ax_z.set_xlabel(r"$s$ [$m$]")
 
-    # linestyle is explicit everywhere: the scienceplots "ieee" style cycles
-    # linestyles as well as colours, which would otherwise override the
-    # solid/dashed convention these panels rely on
+    # linestyle is explicit everywhere, so the solid/dashed convention these
+    # panels rely on cannot be overridden by the style's cycle
     for r, c in zip(runs, colors):
         s, b0 = r["evo"]["s"], r["beta_x"]
         ax_b.plot(s, r["evo"]["beta_x"], color=c, lw=1.5, ls="-",
@@ -362,7 +361,7 @@ def main():
     ax3.set_xlim(*lims[0])
     ax3.set_ylim(*lims[1])
     ax3.set_zlim(*lims[2])
-    # the science/ieee style's minor ticks turn a 3-D box into a wire mess
+    # the style's minor ticks turn a 3-D box into a wire mess
     for axis in (ax3.xaxis, ax3.yaxis, ax3.zaxis):
         axis.set_major_locator(MaxNLocator(4))
         axis.set_minor_locator(NullLocator())

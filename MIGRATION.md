@@ -430,13 +430,13 @@ Check off each item as it is migrated. Rules that apply to every code file:
 
 ## Docs
 
-- [ ] `docs/overview.md` ← rework `beamline_design/README.md` (facts, not derivation)
 - [x] `docs/dogleg_design.md` — new; the SASE-branch compressor design procedure
       (sizing, achromat, entrance Twiss, ki choice), the R56 geometric-vs-tracked
       bookkeeping, and the OP1/OP2 design of record. Companion chapter for the
       chicane still to write.
-- [ ] `docs/IM_layout.png` ← py4pitz root `IM_layout.png` (not in this
-      repository yet; `docs/overview.md` will reference it)
+- [x] `docs/overview.md` and the layout figure — dropped by decision: the
+      machine overview is documented with the injector and FEL deliveries,
+      not here. `docs/` holds the per-subsystem design notes only.
 - [x] Root `README.md`: install/quickstart filled
 - [x] `data/README.md`: define the supplied 50k P0 beams as the workflow inputs
 - [x] `data/OP{1..4}_50k.dist` — canonical P0 beams, in git (`.gitignore` carries an
@@ -459,5 +459,5 @@ from the supplied `data/OP{1..4}_50k.dist` files.
 ## Companion repository (published separately)
 
 - [ ] `partdist` — the only dependency not on PyPI (everything else --
-      numpy, scipy, matplotlib, scienceplots, ocelot-collab -- is declared in
+      numpy, scipy, matplotlib, ocelot-collab -- is declared in
       `pyproject.toml`)

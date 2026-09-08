@@ -231,8 +231,8 @@ def main():
         for run in runs:
             s, sx, sy = run[key]
             c = cmap(norm(run["r"]["g1"]))
-            # linestyle is pinned: the scienceplots "ieee" style cycles
-            # linestyles as well as colours and would break solid=x / dashed=y
+            # linestyle is pinned: colour carries g1, dash the plane, whatever
+            # the style's cycle does and would break solid=x / dashed=y
             ax.plot(s, sx * 1e3, color=c, lw=1.4, ls="-")
             ax.plot(s, sy * 1e3, color=c, lw=1.2, ls="--")
         ax.set_xlabel(r"$s$ [$m$]")

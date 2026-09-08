@@ -3,7 +3,7 @@
 Each script is run as `python <script>.py` with its settings edited at the top
 of its `__main__` block; none takes command-line arguments. The sizing maps
 save their figures under `outputs/tools/figures/` through `plt_style.py`, the
-tools-side copy of `thzim.utils` (needs `scienceplots`); the demos import
+tools-side copy of `thzim.utils` (matplotlib only); the demos import
 `thzim.utils` and need the package installed. These are parameter checks and
 method demonstrations, not simulations.
 

@@ -14,7 +14,8 @@ every other module would otherwise redefine:
   `thzim.dogleg` re-export `M_E_GEV` and `brho` for backwards compatibility.
 
 matplotlib is imported lazily inside `apply_style`, so the rigidity helpers
-cost nothing to import.
+cost nothing to import. The style itself is the `STYLE` dict of rcParams,
+written out by hand rather than taken from a style package.
 """
 
 import os
@@ -24,7 +25,7 @@ import numpy as np
 from scipy.constants import c as c_light, e as q_e, m_e
 
 __all__ = [
-    "apply_style", "output_dir", "save",
+    "STYLE", "apply_style", "output_dir", "save",
     "M_E_GEV", "brho", "k_of_g", "g_of_k",
 ]
 
@@ -56,12 +57,59 @@ def g_of_k(k, energy_gev):
 
 # -------------------------------- figure style --------------------------------
 
-def apply_style(dpi=150, savefig_dpi=600):
-    """Apply the project figure style (scienceplots 'science'+'ieee', no LaTeX)."""
-    import matplotlib.pyplot as plt
-    import scienceplots      # noqa: F401  (registers the styles)
+# The project figure style, written out by hand so that no style package is
+# needed: a compact serif look for two-column papers (inward ticks on all four
+# sides, minor ticks, thin axes, a muted colour cycle, no grid, no legend
+# frame). Colour carries the plane in every figure and the linestyle the curve
+# kind, so the cycle deliberately varies COLOUR ONLY -- scripts still pin
+# `ls=` explicitly, which keeps them robust to any later style change.
+STYLE = {
+    "font.family": "serif",
+    "font.serif": ["Times New Roman", "Times", "Nimbus Roman", "DejaVu Serif",
+                   "serif"],
+    "mathtext.fontset": "dejavuserif",
+    "font.size": 8,
+    "axes.labelsize": 8,
+    "axes.titlesize": 8,
+    "legend.fontsize": 7,
+    "xtick.labelsize": 7,
+    "ytick.labelsize": 7,
+    "axes.linewidth": 0.6,
+    "axes.grid": False,
+    "axes.prop_cycle": "cycler('color', ['#0C5DA5', '#00B945', '#FF9500', "
+                       "'#FF2C00', '#845B97', '#474747', '#9E9E9E'])",
+    "axes.formatter.use_mathtext": True,
+    "lines.linewidth": 1.0,
+    "lines.markersize": 3,
+    "patch.linewidth": 0.6,
+    "xtick.direction": "in",
+    "ytick.direction": "in",
+    "xtick.top": True,
+    "ytick.right": True,
+    "xtick.minor.visible": True,
+    "ytick.minor.visible": True,
+    "xtick.major.size": 3.0,
+    "ytick.major.size": 3.0,
+    "xtick.minor.size": 1.5,
+    "ytick.minor.size": 1.5,
+    "xtick.major.width": 0.5,
+    "ytick.major.width": 0.5,
+    "xtick.minor.width": 0.4,
+    "ytick.minor.width": 0.4,
+    "legend.frameon": False,
+    "figure.figsize": (3.3, 2.5),
+    "savefig.bbox": "tight",
+    "savefig.pad_inches": 0.05,
+    "text.usetex": False,
+}
 
-    plt.style.use(["science", "ieee", "no-latex"])
+
+def apply_style(dpi=150, savefig_dpi=600):
+    """Apply the project figure style (`STYLE`, plus the two dpi settings)."""
+    import matplotlib.pyplot as plt
+
+    plt.rcdefaults()
+    plt.rcParams.update(STYLE)
     plt.rcParams["figure.dpi"] = dpi
     plt.rcParams["savefig.dpi"] = savefig_dpi
 
