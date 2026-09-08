@@ -6,9 +6,10 @@ compression (Ocelot, space charge + CSR) to the undulator entrance P3. The
 injector upstream of P0 and the FEL simulation downstream of P3 are delivered
 separately.
 
-> **Status:** the importable optics package, canonical P0 inputs, subsystem
-> design studies, and per-OP P0 → P1 matching scripts are in place. Remaining
-> integration work is tracked in [MIGRATION.md](MIGRATION.md).
+> **Status:** the importable optics package, the canonical P0 inputs, the
+> per-OP design scripts for all three sections (M1, compressor, M3) and the
+> P0 → P3 driver are in place for OP1–OP4. What remains (overview document,
+> a few library clean-ups) is tracked in [MIGRATION.md](MIGRATION.md).
 
 ## Repository map
 
@@ -27,8 +28,6 @@ SASE branch (OP1: 1 THz, OP2: 10 THz) and superradiant branch
 (OP3: 1 THz, OP4: 0.3 THz). See `docs/overview.md`.
 
 ## Install
-
-<!-- TODO: verify once code lands -->
 
 ```bash
 pip install -e .
