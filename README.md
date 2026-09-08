@@ -12,7 +12,7 @@ the supplied P0 particle distributions through middle-optics beam transport
 
 | Path | Category | Content |
 |---|---|---|
-| `src/thzim/` | Toolchain | Importable library: chicane, compressor, dogleg, maps, quadruplet, triplet, two_triplet, utils |
+| `src/thzim/` | Toolchain | Importable library: chicane, compressor, dogleg, maps, quadruplet, record, triplet, two_triplet, utils |
 | `repro/02_beamline/` | Reproduction | Middle optics P0 → P3 design and tracking per working point |
 | `repro/03_fel/` | Reproduction | Genesis4 FEL runs for OP1–OP4 (local + HTCondor) |
 | `resources/` | Static inputs | Genesis undulator lattices |
@@ -60,4 +60,13 @@ Git.
 
 ## Quickstart
 
-<!-- TODO: per-stage run commands once code lands; see repro/*/README.md -->
+```bash
+pip install -e .                                  # plus partdist, see above
+python repro/02_beamline/run_line.py OP3          # P0 -> P3 for one working point
+```
+
+`run_line.py` rebuilds the line from the design of record (`src/thzim/record.py`)
+and writes the P1/P2/P3 beams and a summary under `outputs/OP3/line/`. The
+per-OP scripts in `repro/02_beamline/` are where each design value is derived;
+see that directory's README for the order. The FEL stage (`repro/03_fel/`) is
+still to be added.

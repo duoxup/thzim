@@ -50,6 +50,29 @@ Check off each item as it is migrated. Rules that apply to every code file:
       on OP3 against the `chicane_beta_x_scan.py` convergence table at
       beta_x = 30 m (2.63 um corrected eps_x and 14 mm residual eta here
       against 2.61 um / 12.4 mm there on the conditioned beam).
+- [x] `record.py` — new; the design of record as importable data (see the
+      `run_line.py` entry under Reproduction). `DoglegKnobs` re-solves `ko`
+      from `ki` rather than storing it; everything else is a literal. Each
+      section also carries the SC tracking settings it was designed under
+      (two-triplet sections 31^3 / 0.05 m, everything else 63^3 / 0.02 m).
+      Two things had to be right before the driver reproduced the per-OP
+      chain, both found on OP2, whose compression sits near its knee and
+      feels the transverse conditions through space charge: (1) the SC
+      settings -- tracking M1 at 63^3 / 0.02 m instead of 31^3 / 0.05 m gave
+      335 A instead of 213 A at P2; (2) the energy that converts the
+      two-triplet gradients to k1 -- `match_with` uses the BEAM's energy
+      (40.05 MeV), and the nominal 39.91 MeV (0.35 % off) still left 241 A
+      and moved P1 beta_x 1.78 -> 1.41 m. With both as the e2e script had
+      them every plane agrees to the printed digits (the compressor stage
+      alone reproduced `dogleg_track.py` bit for bit throughout). So the
+      SASE M1 crossings are sensitive at the level that matters for the peak
+      current, to both the SC mesh and a 0.3 % gradient error; a convergence
+      check of the two-triplet e2e at 63^3 / 0.02 m is worth doing before the
+      design is frozen. Remaining, definitional difference: the driver
+      reports dispersion-corrected Twiss, the match scripts ocelot's
+      projected one, so at P3 the driver's Bmag_x reads 1.003 (OP1) and
+      1.010 (OP2, where beta_x* = 0.53 m and the 7 mm residual eta counts)
+      against the scripts' 1.000.
 - [x] `quadruplet.py` — `QuadrupletGeom.d_inter` now also takes a tuple of
       three (Q1-Q2, Q2-Q3, Q3-Q4), so the superradiant M3 -- T1.Q3 plus the T2
       triplet across the 0.92 m switch region, gaps (0.92, 0.30, 0.30) -- is
@@ -291,8 +314,22 @@ Check off each item as it is migrated. Rules that apply to every code file:
 
 ## Reproduction — `repro/02_beamline/`
 
-- [ ] P0 → P3 driver (entry point running the full line per OP, replacing
-      `beamline_design/segments.py`; see the note in the toolchain section)
+- [x] `run_line.py` — the P0 → P3 driver, replacing `beamline_design/
+      segments.py` and the tracking half of `fel_design/fel_prep2.py`. It
+      solves NOTHING: `thzim.record` (new) holds each OP's line as data --
+      section geometry, the SC-matched strengths the per-OP scripts derived,
+      the P3 target -- and the driver rebuilds the three lattices from it and
+      tracks section by section with `thzim.compressor.track_compressor`
+      (SC everywhere, CSR in the compressor), writing every plane as ASTRA
+      and a per-plane `summary.json`. `--start/--stop` re-run part of the
+      line from a saved plane, `--input` runs a different beam (the 1M
+      distributions) through the same line. The per-OP scripts keep their own
+      settings blocks: they are where the numbers are derived, `record.py` is
+      where the result is kept; a value changed in a script must be carried
+      into the record by hand -- that duplication is deliberate and small.
+      Not carried over from `segments.py`: the `.npz` dumps and the
+      `chirp_scale` hook (unused); nor from `fel_prep2.py`: the Genesis
+      window bookkeeping, which belongs to `repro/03_fel/fel_prep.py`.
 - [x] `OP{1,2}/dogleg_ki_scan.py`, `OP{1,2}/dogleg_forward.py` — new; the
       two-step dogleg solve over `thzim.dogleg` (scan the free inner-pair ki,
       then run the chosen one forward). Replaces the short-lived

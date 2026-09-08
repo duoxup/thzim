@@ -101,14 +101,27 @@ exit, P3 undulator entrance.
   OP4 is the collective-dominated point (0.6 nC at 21.8 MeV against OP3's
   0.2 nC at 39.9 MeV): the trade-off has the same shape and the same `beta_x`
   wins, but it is worth several um of emittance instead of one.
-- P0 → P3 driver script — entry point running the per-OP line
-  (to migrate, see MIGRATION.md). Until it lands, the per-OP chain is run
-  script by script in the order above; every plane's beam is an ASTRA file
-  under `outputs/OP<n>/beams/` (`p1.ast`, `p2.ast`, `p3.ast`).
+- `run_line.py` — the P0 → P3 driver. Rebuilds one OP's whole line from
+  `thzim.record` (the design of record as data: geometry, SC-matched
+  strengths, P3 target) and tracks it section by section with SC everywhere
+  and CSR in the compressor. Writes `outputs/OP<n>/line/p{1,2,3}.ast`, a
+  per-plane `summary.json` and the whole-line evolution figure. It solves
+  nothing: the per-OP scripts above are where each number is derived, and
+  a value changed there has to be carried into `thzim/record.py`.
 
 Input: `data/OP{1..4}_50k.dist`. Output: per-segment beam dumps and the
 `p3.ast` beams consumed by `repro/03_fel/`.
 
 ## Run
 
-<!-- TODO: driver command per OP -->
+The design, one OP at a time, from the canonical 50k P0 beam:
+
+```bash
+python repro/02_beamline/run_line.py OP3            # 3-8 min per OP with SC
+python repro/02_beamline/run_line.py OP1 --input /path/to/OP1_1M.dist --out outputs/OP1/line_1M
+python repro/02_beamline/run_line.py OP4 --start p2  # M3 only, from line/p2.ast
+python repro/02_beamline/run_line.py OP2 --no-sc --no-csr   # linear reference
+```
+
+To re-derive a design value, run the per-OP script that owns it (order as
+listed above) and carry the result into `src/thzim/record.py`.
