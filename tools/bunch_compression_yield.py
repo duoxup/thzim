@@ -35,7 +35,7 @@ bunch_compression_scan.py: charge, and spread_cor = cor_pz / mean(pz).
 
 Layout: physics -> ``__main__`` (user settings, compute, plot). Shares the
 profile models and peak_current() with bunch_compression_scan.py (same directory, so a plain import
-works). Figures are shown, not saved.
+works). Figures are shown and saved under `outputs/tools/figures/`.
 """
 
 import numpy as np

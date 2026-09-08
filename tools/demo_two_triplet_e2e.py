@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 r"""Two-triplet match, step 2 of 2: run the chosen working point end to end.
 
-Takes the (g1_fwd, g1_bwd) pair picked off `demo_two_triplet_scan.py`, re-solves
-each leg's round knobs there, builds the full line in physical order and tracks
+Takes the six GRADIENTS picked off `demo_two_triplet_scan.py` (`T1_G`, `T2_G`),
+evaluates them with `thzim.two_triplet.match_with` -- no solve, since a g1 alone
+does not pin the branch -- builds the full line in physical order and tracks
 the injection beam through it:
 
     inj   T1(Q1 Q2 Q3)   GAP (3 screens)   T2(Q1 Q2 Q3)   target
@@ -56,18 +57,22 @@ FIGS = output_dir(REPO, "tools", "figures")
 GEOM = TwoTripletGeom(t1_lq=(0.15, 0.15, 0.15), t1_drifts=(0.50, 0.15, 0.15),
                       t2_lq=(0.15, 0.15, 0.15), t2_drifts=(0.15, 0.15, 0.20),
                       gap=3.0, screens=(0.30, 1.50, 2.70))
-TARGET = (16.672, 32.527, 2.180, 2.339)   # OP1 dogleg entrance (bx, ax, by, ay)
+TARGET = (16.672, 32.527, 2.180, 2.339)   # a dogleg-entrance-like Twiss on the
+                                          # development geometry; NOT the OP1
+                                          # design of record (see the scan demo)
 
 # The working point, copied from demo_two_triplet_scan.py. GRADIENTS, not just g1:
 # the round solve at a fixed g1 has several branches and a cold call
 # lands on whichever the seed reaches, which is not the one the scan
 # crossed on. See thzim.two_triplet.match_with.
-T1_G = (-0.2347, +0.4550, -0.2318)   # T1 (Q1, Q2, Q3) [T/m]
-T2_G = (-0.5792, +0.5817, +0.3542)   # T2 (Q1, Q2, Q3) [T/m]
+# Candidate #0 of the SC scan (the one whose free screen agrees), active:
+T1_G = (-0.2440, +0.4780, -0.2477)   # T1 (Q1, Q2, Q3) [T/m]
+T2_G = (-0.1116, -0.3840, +0.8123)   # T2 (Q1, Q2, Q3) [T/m]
+# The other real crossing, kept for comparison (the one `match_with`'s
+# docstring uses to show that a g1 alone does not determine the lattice):
+# T1_G = (-0.2347, +0.4550, -0.2318)
+# T2_G = (-0.5792, +0.5817, +0.3542)
 
-T1_G = (-0.2440, +0.4780, -0.2477)
-T2_G = (-0.1116, -0.3840, +0.8123)
-     
 SCREEN_PAIR = (0, -1)     # must match the scan, so the residual means the same
 
 SC = False                # space charge in the e2e track AND in the screen

@@ -11,10 +11,7 @@ dist/
 # ... except the canonical 50k-particle P0 inputs, which ship with the repo
 !data/OP*_50k.dist
 
-# Caches and generated output
-_cache/
-_segments/
-*.npz
+# Run logs
 *.log
 
 # Repository-local output root

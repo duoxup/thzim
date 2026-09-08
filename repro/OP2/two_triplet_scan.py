@@ -95,7 +95,7 @@ DOGLEG = DoglegGeom(theta_deg=40.0, rho=0.542, delta_x=2.0, d_in=0.0, d_out=0.3)
 KI = -22.0                      # OP2 design of record (the ki-scan optimum);
                                 # sets the target Twiss
 
-# The section in physical order, with the same hardware as OP1. Group A is a
+# The section in physical order, with the same hardware as OP1. T1 is a
 # triplet in a four-slot station, so its dead fourth slot folds into the gap:
 # 0.30 + 0.10 + 3.00 = 3.40 m. Screens sit at 10 %, 50 % and 90 % of the gap.
 GEOM = TwoTripletGeom(t1_lq=(0.10, 0.10, 0.10), t1_drifts=(0.30, 0.30, 0.30),

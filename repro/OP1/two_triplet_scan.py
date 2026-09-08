@@ -42,8 +42,8 @@ Space charge: both leg scans track with SC. The round knobs (g2, g3) are solved
 LINEARLY, on the argument that they enforce a ratio between the planes and an
 already-round beam takes a symmetric SC kick. That argument is adequate here --
 4.5 % worst deviation at the selected working point -- but every scan point
-reports it anyway,
-measured on the track that ran regardless, and `SC_KNOBS = True` re-solves them
+reports it anyway, measured on the track that ran regardless, and
+`SC_KNOBS = True` re-solves them
 under space charge if it ever stops holding.
 
 Watch that column. The first run of this script reported 13-27 % and the leg
@@ -87,7 +87,7 @@ EKIN_MEV = 15.4                 # OP1
 DOGLEG = DoglegGeom(theta_deg=40.0, rho=0.542, delta_x=2.0, d_in=0.2, d_out=0.1)
 KI = -38.0                      # OP1 design of record; sets the target Twiss
 
-# The section in physical order. Group A is a triplet in a four-slot station,
+# The section in physical order. T1 is a triplet in a four-slot station,
 # so its dead fourth slot folds into the gap: 0.30 + 0.10 + 3.00 = 3.40 m.
 # The screens are fixed at 10 %, 50 % and 90 % of that gap.
 GEOM = TwoTripletGeom(t1_lq=(0.10, 0.10, 0.10), t1_drifts=(0.30, 0.30, 0.30),

@@ -4,9 +4,9 @@ Two unrelated groups live here on purpose, because both are one-liners that
 every other module would otherwise redefine:
 
 * **figure output** -- `apply_style` / `output_dir` / `save` are the
-  package-side copy of `tools/plt_style.py`; the tools/ scripts keep their own
-  so they stay runnable without installing thzim, while repro/ scripts (which
-  need the package anyway) import from here.
+  package-side copy of `tools/plt_style.py`; the standalone sizing tools keep
+  their own so they stay runnable without installing thzim, while the repro/
+  scripts and the demo tools (which need the package anyway) import from here.
 * **beam rigidity** -- `M_E_GEV`, `brho`, `k_of_g`, `g_of_k`. Every design
   module needs the gradient [T/m] <-> geometric strength [1/m^2] conversion,
   and it is the ONLY place beam energy enters a linear-optics calculation, so
@@ -15,9 +15,6 @@ every other module would otherwise redefine:
 
 matplotlib is imported lazily inside `apply_style`, so the rigidity helpers
 cost nothing to import.
-
-TODO(migration): inline `new_subplots` and `save_figure_auto_date` from xtils,
-see MIGRATION.md.
 """
 
 import os

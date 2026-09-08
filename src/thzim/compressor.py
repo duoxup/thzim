@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 r"""Compressor tracking: a bunch through a dogleg or a chicane with SC and CSR.
 
 The one stage of the middle optics that is NOT a matching problem. The lattice

@@ -34,9 +34,10 @@ still carries two free parameters -- and two different (waist size, waist
 position) pairs can pass through the same two screen readings. The curves
 therefore cross more than once, and only ONE of those crossings is the match.
 
-Measured on the OP1 demo case, with screens at 0.1 / 0.5 / 0.9 m into a 1 m gap:
+Measured on `tools/demo_two_triplet_scan.py` (screens at 0.3 / 1.5 / 2.7 m
+into a 3 m gap), reading the middle screen:
 
-    crossing   sigma @ 0.5 m, fwd vs bwd     delivered Bmag
+    crossing   sigma @ 1.5 m, fwd vs bwd     delivered Bmag
     0            0.2501 / 0.2473  (1.1 %)      1.016 / 1.005     <- the match
     1            1.1769 / 0.5831  (67 %)     302.4   / 224.6     <- spurious
 
@@ -51,7 +52,7 @@ upstream API did -- happens to be right here and is not right in general.
   leg scans      SC ON, BOTH legs.  Not negotiable. It was tested: an
                  "anti-distortion" variant that ran the backward leg linearly
                  and reflected its SC displacement through the linear curve
-                 (`triplet_crossing_mirror.py` upstream) did NOT give a better
+                 (a retired upstream study, see MIGRATION.md) did NOT give a better
                  crossing. The screen sizes are what is being matched on, and
                  space charge changes them, so both legs must see it.
   round knobs    LINEAR by default, but CHECK -- and the check is free. g2 and
@@ -61,8 +62,7 @@ upstream API did -- happens to be right here and is not right in general.
                  (`tools/demo_triplet_round_transport.py`). On the present
                  two-triplet geometry the chosen OP1 crossing is within 4.5 %.
                  Re-solving under space charge did not pay for itself upstream
-                 either
-                 (`triplet_crossing_scsc.py`). Still, `leg_scan` reports
+                 either (another retired study). Still, `leg_scan` reports
                  `sc_roundness_dev` per scan point, read straight off the track
                  it already ran, and `sc_knobs=True` re-solves g2 and g3 under
                  space charge (seeded from the linear answer) if that number
@@ -83,10 +83,9 @@ module and never reaches the caller. Gradients go in and come out as
 
 ## Status
 
-This route SUPERSEDES the earlier `crossing_match_api.py` implementation (a
-six-knob joint least squares over two quad groups, now retired) and is the
-adopted OP1/OP2 upstream-matching route. See MIGRATION.md for the design-change
-history.
+This route SUPERSEDES the earlier six-knob joint least squares over two quad
+groups (retired upstream, not in this package) and is the adopted OP1/OP2
+upstream-matching route. See MIGRATION.md for the design-change history.
 
 Beams are partdist distributions; ocelot conversion happens internally.
 """

@@ -12,9 +12,9 @@ The P3 target is the FEL-side choice recorded in the design of record and
 carried here as a constant: (beta_x, alpha_x, beta_y, alpha_y) =
 (0.53, 0, 0.53, 0), a round 0.53 m waist at the undulator entrance. There is
 no derivation script for it. The linear solution lands in the same family as
-the as-built OP2 M3 of the design of record, k1 = (22.8, -34.1, 34.1, -117.0)
-1/m^2 -- the last quad is strong, ~18 T/m at 40 MeV, because the 0.53 m
-waist sits only 0.4 m past it.
+the upstream as-built OP2 M3, k1 = (22.8, -34.1, 34.1, -117.0) 1/m^2 -- the
+last quad is strong, ~17 T/m at 40 MeV, because the 0.53 m waist sits only
+0.4 m past it.
 
 Matching is done on the PROJECTED P2 Twiss, as in the design of record. The
 projected horizontal Twiss includes the residual dispersion the dogleg leaves

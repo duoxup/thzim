@@ -12,8 +12,10 @@ not determine the lattice.** The round solve at a fixed g1 has several branches,
 and which one it reaches depends on the seed. The scan finds the right one by
 continuity from its neighbours; a cold solve at the same g1 has nothing to be
 continuous with (`thzim.two_triplet.match_with` has the OP1 numbers: a
-106 1/m^2 quadrupole and Bmag in the thousands from the wrong branch). Copying
-the gradients removes the ambiguity. Four panels against s, x blue and y red:
+106 1/m^2 quadrupole and a 180 % free-screen residual from the wrong branch).
+Copying the gradients removes the ambiguity.
+
+Four panels against s, x blue and y red:
 
   (a) normalised emittance -- what the section costs the beam
   (b) beta, with the dogleg entrance target marked; the title carries Bmag,
@@ -44,7 +46,7 @@ densely. Use it to separate what the OPTICS does from what the CHARGE does --
 the linear track is also the honest reference for the emittance panel, since the
 P0 beam is chirped (sigma_p/p = 0.80 %, full spread 3.4 %) and picks up
 chromatic projected-emittance structure in strong quads -- and OP2's quads ARE
-strong, up to ~30 1/m^2 -- that has nothing to do with space charge.
+strong, up to ~40 1/m^2 -- that has nothing to do with space charge.
 
 Run:  python two_triplet_e2e.py     (needs `pip install -e .` at the repo root
       plus `partdist`)

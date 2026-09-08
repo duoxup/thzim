@@ -1,16 +1,23 @@
-# Command-line Tools
+# Standalone Tools
 
-Standalone CLI utilities used by the workflows.
+Each script is run as `python <script>.py` with its settings edited at the top
+of its `__main__` block; none takes command-line arguments. The sizing maps
+save their figures under `outputs/tools/figures/` through `plt_style.py`, the
+tools-side copy of `thzim.utils` (needs `scienceplots`); the demos import
+`thzim.utils` and need the package installed. These are parameter checks and
+method demonstrations, not simulations.
+
+- `plt_style.py` — `apply_style` / `output_dir` / `save`, shared by the
+  sizing maps below so they run without `thzim`.
 
 - `bunch_compression_scan.py` — sizing-stage compressor scan from linear theory:
   required correlated momentum spread over a (σ_z,b, R56) grid, with
   compression-factor contours. One panel per operating point (2×2), each
-  overlaid with the measured beam from `data/OP*_50k.dist` — iso-line at the
-  spread the injector delivers, marker at the R56 it implies. Both sign
-  conventions (z / tau) and both branches (under / over). Standalone: edit the
-  user settings at the top of the `__main__` block and run. Needs
-  numpy/scipy/matplotlib, plus `partdist` for the measured overlay only
-  (imported lazily, so the analytic scan runs without it).
+  overlaid with the measured beam — iso-line at the spread the injector
+  delivers, marker at the R56 it implies. The beam values are seeded in the
+  settings block; `measure_beam()` re-reads them from `data/OP*_50k.dist` and
+  is the only place `partdist` is needed (imported lazily). Both sign
+  conventions (z / tau) and both branches (under / over).
 - `bunch_compression_r56.py` — the transpose of `bunch_compression_scan.py`:
   the correlated spread moves to the y axis and the colour map becomes the
   required R56, i.e. "the injector gives me this chirp, how long must the
@@ -47,26 +54,28 @@ Standalone CLI utilities used by the workflows.
   conserved, so a compressor is the horizontal arrow drawn from each operating
   point's pre-compression length to its target. Shares the profile models with
   `bunch_compression_scan.py`.
-- `undulator_resonance.py` — analytic FEL resonance for a helical (APPLE-II)
+- `undulator_resonance.py` — analytic resonance of a helical (APPLE-II)
   undulator, optionally in a waveguide: gap → B0 (exponential fit) → K_rms →
-  resonant wavelength, plotted per undulator period. Standalone: edit the
-  user settings at the top of the `__main__` block and run; figures are shown,
-  not saved. Only needs numpy/scipy/matplotlib.
+  resonant wavelength, plotted per undulator period. A parameter check for
+  the working-point energies, not an FEL simulation (that is delivered
+  separately). Figures are shown, not saved; only needs numpy/scipy/matplotlib.
 - `demo_triplet_round_transport.py` — demo / smoke test for `thzim.triplet`.
   Scans the first-quad gradient g1 over 5 values, solves (g2, g3) for a round
-  exit beam at each, and draws sigma(s) twice on the same axes: space charge
-  off (analytic 2x2 over `thzim.maps`) and on (the SAME knobs, ocelot-tracked).
+  exit beam at each, and draws sigma(s) in two side-by-side panels: space
+  charge off (analytic 2x2 over `thzim.maps`) and on (the SAME knobs,
+  ocelot-tracked).
   Colour = g1, solid = sigma_x, dashed = sigma_y. The printed `lin dev` /
   `sc dev` columns are the worst fractional |sigma_x − sigma_y| anywhere in the
   exit drift, and the point of the figure is that the second stays small at the
   first's knobs — which is why the original study never solved g2, g3 under
-  space charge. Set `SC_KNOBS = True` to test that claim (~1 min per g1). Needs
+  space charge. Set `SC_KNOBS = True` to test that claim (minutes per g1). Needs
   `thzim` installed plus `partdist`; builds its own Gaussian beam, so no data
   file is required.
 - `demo_two_triplet_scan.py` + `demo_two_triplet_e2e.py` — demo / smoke test
   for `thzim.two_triplet`, split the same way the dogleg pair is: scan first,
-  a person chooses, then simulate the choice. Case: OP1's P0 beam onto the OP1
-  dogleg entrance Twiss.
+  a person chooses, then simulate the choice. Case: OP1's P0 beam onto a
+  dogleg-entrance-like Twiss on the development geometry (not the design of
+  record; `repro/OP1/` has that).
   1. `demo_two_triplet_scan.py` scans both legs' free gradient and draws the
      leg envelopes (sigma(s) per g1, colour = g1, solid = sigma_x, dashed =
      sigma_y) and the (sigma@screen, sigma@screen) map, then TABULATES the
@@ -75,8 +84,9 @@ Standalone CLI utilities used by the workflows.
      far the two legs disagree at the screen the crossing did not use, which
      separates a real match from a parabola coincidence (1.2 % against 67 %,
      delivered Bmag 1.02 against 302).
-  2. `demo_two_triplet_e2e.py` takes the chosen `G1_FWD` / `G1_BWD`, re-solves
-     the round knobs there and tracks the line end to end: normalised
+  2. `demo_two_triplet_e2e.py` takes the chosen gradients `T1_G` / `T2_G`
+     (all six -- a g1 alone does not pin the branch), evaluates them with
+     `match_with` and tracks the line end to end: normalised
      emittance, beta with the target marked, rms size, and the ocelot element
      plot, x blue and y red.
   Both carry an SC switch (`SC_SCAN` / `SC`); off runs analytically in seconds,

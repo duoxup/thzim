@@ -58,8 +58,7 @@ if __name__ == "__main__":
     charge_range = (600e-12, 1500e-12, 300)    # bunch charge [C]
 
     # labelled iso-current lines [A]; those off the map are reported, not drawn
-    # i_levels = [10, 30, 100, 200, 400, 1000, 3000]
-    i_levels = None
+    i_levels = [10, 30, 100, 200, 400, 1000, 3000]     # None: no iso-lines
 
     # optional working points: name, charge [C], rms length [m]. `sigma_z_before`
     # adds the compressor arrow (charge is conserved, so it is horizontal);
@@ -73,8 +72,7 @@ if __name__ == "__main__":
              sigma_z_before=0.76e-3, text_offset=(11, 6)),
         dict(name="OP4", charge=0.600e-9, sigma_z=0.1508e-3,
              sigma_z_before=1.05e-3, text_offset=(11, -16)),
-    ]
-    markers = None
+    ]                                                   # None: no markers
     # -----------------------------------------------------------------
 
     # ---------------------------- compute ----------------------------
@@ -173,4 +171,4 @@ if __name__ == "__main__":
     ax.set_title(f"Peak current — {profile.label} current profile", fontsize=11)
 
     plt.show()
-    ps.save(fig, FIGS, 'fig_peak_current_map_op4')
+    ps.save(fig, FIGS, 'fig_peak_current_map')

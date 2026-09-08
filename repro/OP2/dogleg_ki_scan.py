@@ -32,13 +32,16 @@ fit is sigma^2 = eps beta, so with unequal emittances the roundest-beta ki is
 not the roundest-beam ki. Leave it at 1.0 to keep the design distribution-free.
 
 OP2 shares the dogleg hardware with OP1 and, as this scan reproduces, its
-optics as well -- every column below except R56 is bit-identical to OP1's,
-despite the 2.6x energy ratio. Ocelot's `k1` is a geometric strength [m^-2] and
-the bend is given by angle, so the transfer matrix carries no energy at all.
-Energy enters in exactly two places: the R56 velocity term in panel (b), and the
-`k1` -> T/m conversion printed by `DoglegLattice.summary()`. The lead-out drift
-`d_out` differs too (0.3 m here against OP1's 0.1 m) and likewise changes
-nothing: it sits downstream of everything this scan solves.
+optics as well -- `ko`, the peak betas and the score are bit-identical to
+OP1's at every ki, despite the 2.6x energy ratio. Ocelot's `k1` is a geometric
+strength [m^-2] and the bend is given by angle, so the transfer matrix carries
+no energy at all. Energy enters in exactly two places: the R56 velocity term in
+panel (b), and the `k1` -> T/m conversion printed by `DoglegLattice.summary()`.
+The interface drifts differ (`d_in` 0.0 m here against OP1's 0.2 m, `d_out`
+0.3 against 0.1): `d_out` sits downstream of everything this scan solves and
+changes nothing, while `d_in` puts the START marker AT the first bend, so the
+entrance-Twiss columns are the same optics quoted 0.2 m further along and
+read differently from OP1's.
 
 The scan is therefore not re-derivation for its own sake -- it is the check that
 the shared hardware really is shared, and it is where OP2's as-built `ki` comes
@@ -165,8 +168,8 @@ def main():
     ax_o.set_title(r"(b) $k_o$ retunes with $k_i$; $R_{56}$ does not",
                    fontsize=10)
 
-    plt.show()
     save(fig, FIGS, 'fig_OP2_dogleg_ki_scan')
+    plt.show()
 
 
 if __name__ == "__main__":

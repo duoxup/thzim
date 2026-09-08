@@ -148,8 +148,8 @@ def main():
     ax_o.set_title(r"(b) $k_o$ retunes with $k_i$; $R_{56}$ does not",
                    fontsize=10)
 
-    plt.show()
     save(fig, FIGS, 'fig_OP1_dogleg_ki_scan')
+    plt.show()
 
 
 if __name__ == "__main__":

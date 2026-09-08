@@ -25,9 +25,9 @@ The line has three sections, joined at the interface planes:
 Each section also records the SPACE-CHARGE TRACKING SETTINGS it was designed
 under (navigator step, SC mesh), because they are part of the result: the
 two-triplet crossings were selected on 31^3 / 0.05 m tracks, the quadruplet
-re-matches and the compressor runs on 63^3 / 0.02 m, and re-tracking a
-two-triplet section at 63^3 / 0.02 m moves OP2's P1 beta_x from 1.78 to
-1.42 m and its P2 peak current from 213 to 335 A -- the compression sits near
+re-matches and the compressor runs on 63^3 / 0.02 m, and re-tracking OP2's
+two-triplet section at 63^3 / 0.02 m moved its P2 peak current from 213 to
+335 A (MIGRATION.md) -- the compression sits near
 its knee and feels the transverse conditions through space charge. A driver
 that wants to reproduce the design must use each section's own settings.
 
@@ -57,8 +57,8 @@ from thzim.two_triplet import TwoTripletGeom
 from thzim.utils import M_E_GEV
 
 __all__ = [
-    "PLANES", "QuadrupletKnobs", "TwoTripletKnobs", "Segment", "OpRecord",
-    "RECORDS", "get",
+    "PLANES", "QuadrupletKnobs", "TwoTripletKnobs", "DoglegKnobs",
+    "ChicaneKnobs", "Segment", "OpRecord", "RECORDS", "get",
 ]
 
 PLANES = ("p0", "p1", "p2", "p3")

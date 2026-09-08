@@ -12,6 +12,7 @@ dependencies = [
     "numpy",
     "scipy",
     "matplotlib",
+    "scienceplots",
     "ocelot-collab>=25.07",
 ]
 

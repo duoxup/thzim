@@ -28,16 +28,17 @@ worst fractional |sigma_x - sigma_y| anywhere in the exit drift.
 That is the production convention, not a shortcut. In the original study only
 TWO things ever ran with space charge on: the g1-scan screen sizes that locate
 the crossing, and the final end-to-end validation. g2 and g3 came from the
-linear solve throughout (`triplet_crossing_api.run_crossing` is called with
-`sc_g23=False`; `triplet_crossing_scsc.py` exists solely to test whether
-re-solving them under SC changes the delivered Twiss). The physical reason is
+linear solve throughout (its crossing driver never re-solved them under SC,
+and a dedicated study -- retired, see MIGRATION.md -- checked that doing so
+does not change the delivered Twiss). The physical reason is
 visible in this figure: g1 sets the ABSOLUTE size at the screens, which space
 charge inflates directly, while g2 and g3 enforce a RATIO between the planes --
 and the SC kick of an already-round beam is symmetric, so it pushes both planes
 the same way and leaves the ratio nearly alone.
 
 Set `SC_KNOBS = True` to re-solve (g2, g3) under space charge as well and see
-that claim tested. It costs ~1 minute per g1 instead of ~3 seconds.
+that claim tested. It costs one to a few minutes per g1 instead of ~3 seconds
+(the bounded SC refinement was measured at 157 s on a hard OP1 point).
 
 The Gaussian injection beam is built here rather than in `thzim.triplet`: the
 package takes distributions, it does not manufacture them. Swap in
@@ -81,7 +82,7 @@ NPART = 40000
 CHARGE = 1.0e-9               # bunch charge [C]
 SEED = 0
 
-SC_KNOBS = False              # True: re-solve (g2, g3) under SC too (~1 min/g1)
+SC_KNOBS = False              # True: re-solve (g2, g3) under SC too (minutes/g1)
 SC_MESH = (31, 31, 31)
 SC_UNIT_STEP = 0.05           # SC navigator step [m]
 NSL = 60                      # slices per element for the analytic envelope

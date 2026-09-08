@@ -6,9 +6,10 @@ r"""Quadruplet matching section: four quads against four exit Twiss numbers.
 One of the two ways this package matches a beam onto a target Twiss; the other
 is `thzim.two_triplet`. This one is the MODEL route: four knobs against the four
 exit Twiss numbers (beta_x, alpha_x, beta_y, alpha_y), a square problem solved
-against the transfer matrix. It is what the superradiant branch uses for its M1
-section in the design of record -- launch = the P0 Twiss, target = the chicane
-entrance Twiss from `thzim.chicane`.
+against the transfer matrix. In the design of record it is the superradiant
+branch's M1 (launch = the P0 Twiss, target = the chicane entrance Twiss from
+`thzim.chicane`) and the final focus M3 of BOTH branches onto the P3 target
+(with per-gap spacing for the superradiant M3, see `QuadrupletGeom`).
 
 Two layers, and they are not interchangeable:
 

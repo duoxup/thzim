@@ -236,6 +236,8 @@ def beam_energy_gev(dist):
     """Total energy [GeV] of a partdist ParticleDistribution3D."""
     _require_partdist(dist)
     return dist.gamma0 * M_E_GEV
+
+
 def as_ocelot(dist):
     """partdist distribution -> ocelot ParticleArray, referenced to its own z.
 

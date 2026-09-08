@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Aug 17 15:14:00 2026
+"""Figure style and output helpers for the standalone tools.
 
-@author: duoxup
+The tools-side copy of `thzim.utils` (`apply_style`, `output_dir`, `save`),
+kept here so the sizing maps run without installing the package. Keep the
+two in step. Needs `scienceplots`.
 """
 
 import os

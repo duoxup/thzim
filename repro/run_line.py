@@ -25,12 +25,19 @@ chicane bend; `d_out` after B2 for the dogleg), P3 the undulator entrance
 Outputs, under `outputs/<OP>/line/` (override with `--out`):
 
     p1.ast, p2.ast, p3.ast      the beam at each plane
-    summary.json                per-plane beam report (sizes, Twiss, emittance,
-                                dispersion, bunch length, current, energy spread)
-                                plus the P3 Bmag against the target of record
+    summary.json                the run settings (input, planes, SC/CSR, per-
+                                section step and mesh) and a per-plane beam
+                                report (sizes, Twiss, emittance, dispersion,
+                                bunch length, current, energy spread) plus the
+                                P3 Bmag against the target of record. Twiss and
+                                Bmag are on the DISPERSION-CORRECTED moments;
+                                the M3 scripts quote the projected ones, so
+                                their Bmag_x reads 1.000 where this one reads
+                                1.003 (OP1) / 1.010 (OP2)
     fig_<OP>_line.{png,pdf}     the whole line: sizes, emittance, dispersion,
                                 compression, with the planes and magnets marked
-                                (written to outputs/<OP>/figures/)
+                                (written to outputs/<OP>/figures/; a partial
+                                run is suffixed `_<start>_<stop>`)
 
 The evolution figure draws the DISPERSION-CORRECTED horizontal emittance and
 the betatron size next to the total, as the compressor scripts do: inside the
@@ -42,6 +49,8 @@ Usage:
     python run_line.py OP1 --input path/to/OP1_1M.dist --out outputs/OP1/line_1M
     python run_line.py OP4 --start p2               # M3 only, from line/p2.ast
     python run_line.py OP2 --no-sc --no-csr         # the linear reference
+    python run_line.py OP3 --sc-mesh 31 --unit-step 0.05 --no-figure
+                                                    # override every section
 
 Needs `pip install -e .` at the repo root plus `partdist`. Runtime with the
 50k beams: 3-8 minutes per OP, dominated by the SC field solve.
@@ -87,7 +96,8 @@ def parse_args(argv=None):
                         "each section's own value from the record")
     p.add_argument("--csr-nbin", type=int, default=300,
                    help="CSR longitudinal bins (default 300)")
-    p.add_argument("--no-figure", action="store_true")
+    p.add_argument("--no-figure", action="store_true",
+                   help="skip the whole-line evolution figure")
     return p.parse_args(argv)
 
 
@@ -123,7 +133,7 @@ def print_plane(label, r):
 
 # ---------------------------------- figure ----------------------------------
 
-def figure_line(rec, runs, collective):
+def figure_line(rec, runs, physics):
     """The whole line, tracked: one column of panels against s."""
     import matplotlib.pyplot as plt
 
@@ -165,7 +175,7 @@ def figure_line(rec, runs, collective):
     ax_s.legend(loc="upper left", fontsize=7, framealpha=0.85)
     ax_s.set_title(f"(a) rms size -- {rec.name}, {rec.branch}, "
                    f"{rec.charge_nc:g} nC, {rec.ekin_mev:g} MeV "
-                   f"({'SC + CSR' if collective else 'collective effects OFF'})",
+                   f"({physics})",
                    fontsize=10)
     ax_e.plot([], [], color=C_X, lw=1.4, ls="-",
               label=r"$\epsilon_{n,x}$ (dispersion-corrected)")
@@ -217,9 +227,9 @@ def main(argv=None):
     energy_gev = beam_energy_gev(dist)
 
     print(rec.summary())
-    print(f"  beam E_total {energy_gev*1e3:.3f} MeV (converts the two-triplet "
-          f"gradients to k1, as the e2e script did); nominal "
-          f"{rec.energy_gev*1e3:.3f} MeV")
+    print(f"  beam E_total {energy_gev*1e3:.3f} MeV, nominal {rec.energy_gev*1e3:.3f} MeV"
+          + (" (the beam's converts the two-triplet gradients to k1, as the e2e "
+             "script did)" if rec.branch == "SASE" else ""))
     print(f"  input: {src}  n={len(dist)}  "
           f"Q={abs(dist.get_data('Q').sum())*1e9:.3f} nC")
     print(f"  running {args.start} -> {args.stop}: "
@@ -277,7 +287,9 @@ def main(argv=None):
     if not args.no_figure and runs:
         apply_style()
         tag = "" if (args.start, args.stop) == ("p0", "p3") else f"_{args.start}_{args.stop}"
-        save(figure_line(rec, runs, sc or not args.no_csr), figs,
+        physics = (" + ".join(n for n, on in (("SC", sc), ("CSR", not args.no_csr)) if on)
+                   or "collective effects OFF")
+        save(figure_line(rec, runs, physics), figs,
              f"fig_{rec.name}_line{tag}")
         print(f"wrote {figs / f'fig_{rec.name}_line{tag}.png'}")
 

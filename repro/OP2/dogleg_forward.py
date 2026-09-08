@@ -15,7 +15,7 @@ the exit dispersion already came out of API 1 -- dispersion is driven by the
 dipoles from Dx = Dx' = 0 at the entrance, so it never depended on the entrance
 beta/alpha at all. This script is the visualisation and the self-check: the
 peak of the curve in (a) must reproduce the solver's peak_beta, and (b) must
-come back to zero. Both are asserted below.
+come back to zero. Both differences are printed at the end as the check.
 
 Two panels, with the bends and both quad families shaded behind:
   (a) beta_x, beta_y from entrance to exit
@@ -25,10 +25,12 @@ The entrance Twiss printed here is the hand-off to the upstream match
 (`thzim.two_triplet`, run by `two_triplet_scan.py` in this directory), which is
 where a real distribution finally enters the chain.
 
-OP2 runs the same dogleg hardware as OP1 at 39.4 MeV instead of 15.4, and every
-Twiss quantity drawn here is bit-identical to OP1's at the same ki: `k1` is a
+OP2 runs the same dogleg hardware as OP1 at 39.4 MeV instead of 15.4, and the
+optics drawn here is bit-identical to OP1's at the same ki: `k1` is a
 geometric strength and the bend is given by angle, so nothing in the transfer
-matrix carries energy. What differs is `ki` -- OP1's -38 was set by hand, OP2's
+matrix carries energy (the entrance Twiss is quoted at a different plane, since
+OP2's START marker sits at B1 with `d_in = 0`). What differs is `ki` -- OP1's
+-38 was set by hand, OP2's
 -22 is the ki_scan winner -- which is why the two figures look nothing alike
 even though neither depends on the beam energy. See docs/dogleg_design.md.
 
@@ -107,8 +109,8 @@ def main():
     ax_d.set_title(rf"(b) achromat closure: exit $D_x$ = "
                    rf"{dl.Dx_exit*1e3:+.1e} mm", fontsize=10)
 
-    plt.show()
     save(fig, FIGS, 'fig_OP2_dogleg_forward')
+    plt.show()
 
 
 if __name__ == "__main__":

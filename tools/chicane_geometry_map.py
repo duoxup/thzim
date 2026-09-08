@@ -30,8 +30,9 @@ secondary constraint and gets its own map in chicane_offset_map.py, which
 imports the geometry from this file.
 
 Layout: geometry -> ``__main__`` (user settings, compute, plot). The geometry
-functions are module level, so they import cleanly into src/thzim/chicane.py
-when that lands. Figures are shown, not saved by default.
+functions are module level and are this file's own copies of what
+`thzim.chicane` provides, so the map runs without the package. Figures are
+shown and saved under `outputs/tools/figures/`.
 """
 
 from pathlib import Path

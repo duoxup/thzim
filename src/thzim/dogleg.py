@@ -18,11 +18,12 @@ L_gap/2.
 
 Three layers:
 
-  API 1  solve_achromat_quads(geom, ki) -> DoglegLattice
+  API 1  solve_achromat_quads(geom, ki, energy_gev) -> DoglegLattice
          given geometry + inner-pair ki, solve outer-pair ko for the achromat.
   API 2  solve_entrance_twiss(dl) -> EntranceTwiss
          for a FIXED lattice, solve the target entrance Twiss (x, y decoupled).
-  driver design_dogleg(geom, ki_scan, emit_ratio) -> (DoglegLattice, EntranceTwiss)
+  driver design_dogleg(geom, ki_scan, energy_gev, emit_ratio)
+                                        -> (DoglegLattice, EntranceTwiss)
          scan ki, loop API 1 + API 2, keep the roundest (min-peak) solution.
 
 NOTHING HERE READS A PARTICLE DISTRIBUTION. Both solves are pure linear optics:
@@ -32,8 +33,9 @@ and 100 MeV, because Ocelot's k1 [1/m^2] and the bend angle are geometric.
 one place a beam property may enter is `emit_ratio` in the driver, and it is
 optional -- see below.
 
-Sizing helpers (vectorised, angles in RADIANS) sit at module level so the
-tools/ maps can share them. rho_for_r56() is the geometry-only closed form,
+Sizing helpers (vectorised, angles in RADIANS) sit at module level; the
+standalone `tools/dogleg_*_map.py` carry their own copies on purpose, so they
+run without the package. rho_for_r56() is the geometry-only closed form,
 
     R56_z = -2 rho (theta - sin theta)   ->   rho = |R56_z| / (2 (theta - sin theta))
 

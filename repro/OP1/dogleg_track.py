@@ -92,7 +92,7 @@ def print_report(label, r, ref=None):
           f"by={r['beta_y']:.3f} ay={r['alpha_y']:+.3f}")
 
 
-def figure_evolution(evo, evo0, lattice, collective):
+def figure_evolution(evo, evo0, lattice, physics):
     """The compressor, tracked: sizes, dispersion, emittance, compression."""
     from ocelot.gui.accelerator import plot_elems
 
@@ -137,7 +137,7 @@ def figure_evolution(evo, evo0, lattice, collective):
     ax_e.set_ylabel(r"$\epsilon_n$ [$\mu m$]")
     ax_e.legend(loc="upper left", fontsize=7, framealpha=0.85)
     ax_e.set_title("(c) normalised emittance "
-                   f"({'SC + CSR' if collective else 'collective effects OFF'})",
+                   f"({physics})",
                    fontsize=10)
 
     ax_z.plot(s, evo["sig_z"] * 1e3, color=C_Z, lw=1.5, ls="-",
@@ -204,6 +204,8 @@ def main():
         dl = solve_achromat_quads(DOGLEG, KI, energy_gev=energy_gev)
     lattice = dl.lattice
     collective = SC or CSR
+    physics = (" + ".join(n for n, on in (("SC", SC), ("CSR", CSR)) if on)
+               or "collective effects OFF")
 
     print(dl.summary())
     print(f"  beam: {P1_DIST.relative_to(REPO)}, n={len(dist)}, "
@@ -248,7 +250,7 @@ def main():
           f"{evo['sig_y'].max()*1e3:.2f} mm; peak eta {evo['eta'].max()*1e3:.1f} mm")
 
     apply_style()
-    save(figure_evolution(evo, evo0, lattice, collective), FIGS,
+    save(figure_evolution(evo, evo0, lattice, physics), FIGS,
          "fig_OP1_dogleg_track")
     save(figure_lps(as_ocelot(dist), pa), FIGS, "fig_OP1_dogleg_lps")
     plt.show()

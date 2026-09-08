@@ -36,13 +36,14 @@ file.
 
 The velocity term -L_tot/(beta gamma)^2 is dropped on purpose. Checked against
 the exact Ocelot map at the design point (theta = 40 deg, rho = 0.542 m), it is
-worth 6.0 % at 15.4 MeV and 0.9 % at 39.4 MeV -- accepted, because the dogleg
+worth 6.4 % at 15.4 MeV and 1.0 % at 39.4 MeV -- accepted, because the dogleg
 only needs an approximate R56: its peak current is not critical and is trimmed
 afterwards with the injector chirp.
 
 Layout: geometry -> ``__main__`` (user settings, compute, plot). The geometry
-functions are module level, so they import cleanly into src/thzim/dogleg.py when
-that lands. Figures are shown, not saved by default.
+functions are module level and are this file's own copies of what
+`thzim.dogleg` provides, so the map runs without the package. Figures are
+shown and saved under `outputs/tools/figures/`.
 """
 
 from pathlib import Path

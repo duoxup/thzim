@@ -54,7 +54,8 @@ spread that sets the FEL bandwidth is a separate, much smaller quantity (a few
 percent of the total at P0) and does not enter this model.
 
 Layout: profile models -> compression physics -> scan_compression()
--> ``__main__`` (user settings, compute, plot). Figures are shown, not saved.
+-> ``__main__`` (user settings, compute, plot). Figures are shown and saved
+under `outputs/tools/figures/` through `plt_style.save`.
 """
 
 from dataclasses import dataclass

@@ -19,13 +19,14 @@ separately.
 | `repro/` | Reproduction | Middle optics P0 → P3 design and tracking per working point |
 | `tools/` | Toolchain | Sizing maps, standalone calculators and demos |
 | `data/` | Data | Canonical 50k-particle P0 distributions for OP1–OP4 |
-| `docs/` | Docs | Machine overview; per-subsystem design notes |
+| `docs/` | Docs | Dogleg design note; machine overview (to be written) |
 
 ## Working points
 
 Four permanent physics working points are used throughout (`OP1`–`OP4`):
 SASE branch (OP1: 1 THz, OP2: 10 THz) and superradiant branch
-(OP3: 1 THz, OP4: 0.3 THz). See `docs/overview.md`.
+(OP3: 1 THz, OP4: 0.3 THz). The table of charges, energies and compressors
+is in `data/README.md`; `docs/overview.md` is still a placeholder.
 
 ## Install
 
@@ -46,8 +47,9 @@ workflow. See [data/README.md](data/README.md).
 
 Generated files are written under `outputs/` by default: tool figures go to
 `outputs/tools/figures/`, reproduction figures to
-`outputs/OP<n>/figures/`, and tracked segment distributions to
-`outputs/OP<n>/beams/`. Set `THZIM_OUTPUT_DIR` to use a different output root.
+`outputs/OP<n>/figures/`, tracked segment distributions to
+`outputs/OP<n>/beams/`, and the whole-line driver's planes and summary to
+`outputs/OP<n>/line/`. Set `THZIM_OUTPUT_DIR` to use a different output root.
 Missing output directories are created automatically; `outputs/` is ignored by
 Git.
 

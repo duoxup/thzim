@@ -15,7 +15,7 @@ the exit dispersion already came out of API 1 -- dispersion is driven by the
 dipoles from Dx = Dx' = 0 at the entrance, so it never depended on the entrance
 beta/alpha at all. This script is the visualisation and the self-check: the
 peak of the curve in (a) must reproduce the solver's peak_beta, and (b) must
-come back to zero. Both are asserted below.
+come back to zero. Both differences are printed at the end as the check.
 
 Two panels, with the bends and both quad families shaded behind:
   (a) beta_x, beta_y from entrance to exit
@@ -100,8 +100,8 @@ def main():
     ax_d.set_title(rf"(b) achromat closure: exit $D_x$ = "
                    rf"{dl.Dx_exit*1e3:+.1e} mm", fontsize=10)
 
-    plt.show()
     save(fig, FIGS, 'fig_OP1_dogleg_forward')
+    plt.show()
 
 
 if __name__ == "__main__":

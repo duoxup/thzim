@@ -20,6 +20,12 @@ The first figure shows, per entrance beta_x:
 
   (a) beta_x(s), against the collective-free drift curve beta0 + s^2/beta0
   (b) sigma_x(s), total and dispersion-corrected
+  (c) eps_n,x(s) dispersion-corrected, with eps_n,y for comparison -- where
+      along the chicane the growth actually happens. The PROJECTED eps_n,x is
+      deliberately not drawn: inside the chicane eta reaches ~0.26 m and, with
+      sigma_delta ~0.5 %, the dispersive term takes it to ~100 um and back
+      again. That is bookkeeping, not growth. Only its exit value means
+      anything, and the table prints it.
   (d) sigma_z(s), against the same run with SC and CSR switched off -- how much
       say beta_x has over the bunching at all. Two separate things show up here.
       The mid-chicane spread is NOT compression: it is the z-x coupling R51,
@@ -31,12 +37,6 @@ The first figure shows, per entrance beta_x:
       exit sigma_z. What is left is the real effect: SC and CSR spoil the
       compression by ~8 % at beta_x = 1 m but only ~5 % at 60 m, so a larger
       beam bunches slightly better too.
-  (c) eps_n,x(s) dispersion-corrected, with eps_n,y for comparison -- where
-      along the chicane the growth actually happens. The PROJECTED eps_n,x is
-      deliberately not drawn: inside the chicane eta reaches ~0.26 m and, with
-      sigma_delta ~0.5 %, the dispersive term takes it to ~100 um and back
-      again. That is bookkeeping, not growth. Only its exit value means
-      anything, and the table prints it.
 
 Read (a) with care. The plotted beta_x is STATISTICAL, sigma_xbeta^2 / eps_x,
 and eps_x grows under space charge, so the curve SAGS below the drift reference
@@ -78,7 +78,7 @@ import contextlib
 import io
 import tempfile
 from pathlib import Path
-    
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator, NullLocator
@@ -375,9 +375,9 @@ def main():
                   r"($\epsilon_{n,x}$ dispersion-corrected)", fontsize=10)
     ax3.view_init(elev=22, azim=-58)
 
-    plt.show()
     save(fig, FIGS, 'fig_OP3_chicane_beta_x_scan')
     save(fig2, FIGS, 'fig_OP3_chicane_beta_x_objectives')
+    plt.show()
 
 
 if __name__ == "__main__":

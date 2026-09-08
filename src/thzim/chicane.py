@@ -37,8 +37,8 @@ the entrance-Twiss problem into a hard solve and a soft choice:
 Nothing in this module reads a particle distribution.
 
 Migrated from the earlier chicane study implementation; see MIGRATION.md for
-the differences. TODO(migration): the SC/CSR tracking layer (`track_chicane`,
-`Monitor`, beam loading) is not migrated yet.
+the differences. Its SC/CSR tracking layer lives in `thzim.compressor`, shared
+with the dogleg.
 """
 
 from dataclasses import dataclass
@@ -90,7 +90,7 @@ def offset(theta, l_bz, l_dz):
 def r56_z_smallangle(theta, l_bz, l_dz):
     """R56 [m], z convention (> 0 for a chicane), small-angle, no velocity term.
 
-    Reads 1.6 % low at 16.7 deg and 2.5 % low at 19.1 deg against the exact map;
+    Reads 1.6 % low at 16.7 deg and 2.4 % low at 19.1 deg against the exact map;
     the dropped velocity term is worth only 0.2-0.6 % there. Deliberate: the
     chicane is built with margin and trimmed afterwards with theta. Use
     r56_z_exact() when the tracked value is wanted.
@@ -276,11 +276,11 @@ def matched_y(geom, energy_gev):
     `geom.lead` is NOT cosmetic. It puts a drift inside the cell whose periodic
     solution is being taken, so it shifts the answer: at OP3 (theta = 16.69 deg,
     L_Dz = 0.75) beta* runs 0.9457 -> 0.9568 -> 0.9931 m for lead = 0 -> 0.2 ->
-    0.5 m, and alpha* changes SIGN, -0.0530 -> +0.0524 -> +0.2103. The default 0
-    therefore solves the magnetic channel alone, an arbitrary-free quantity;
-    set it to the real interface-plane-to-first-bend distance to get the target
-    at that plane instead. The project convention is `lead = 0.2 m`, which is
-    therefore the `ChicaneGeom` default.
+    0.5 m, and alpha* changes SIGN, -0.0530 -> +0.0524 -> +0.2103. `lead = 0`
+    solves the magnetic channel alone, an arbitrary-free quantity; the real
+    interface-plane-to-first-bend distance gives the target at that plane
+    instead. The project convention is `lead = 0.2 m`, and that is the
+    `ChicaneGeom` default.
 
     What the choice does NOT change is the flatness that motivates the whole
     exercise: beta_y stays within [0.65, 1.06] m across that whole range of

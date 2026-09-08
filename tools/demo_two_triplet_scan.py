@@ -56,9 +56,11 @@ re-solves the knobs under space charge if that number ever stops being small.
 for the tracked version. The candidates it finds are NOT the answer; figure 1's
 envelopes then come from the analytic transport and the panel titles say so.
 
-Case: OP1's P0 beam matched onto the OP1 dogleg entrance Twiss
-(`repro/OP1/dogleg_forward.py`). The section geometry is the one the
-route was developed against upstream, NOT a fixed part of the machine layout.
+Case: OP1's P0 beam matched onto a dogleg-entrance-like Twiss. Neither the
+target nor the section geometry is the design of record: both are the
+development case the route was built against upstream (the real OP1 target,
+(10.80, +26.19, 1.73, +2.09), and section are in `repro/OP1/two_triplet_scan.py`).
+This script exercises the method; that one applies it.
 
 Run:  python demo_two_triplet_scan.py   (needs `pip install -e .` at the repo
       root plus `partdist`; ~2 min with SC_SCAN = True, ~5 s without)
@@ -87,7 +89,9 @@ FIGS = output_dir(REPO, "tools", "figures")
 GEOM = TwoTripletGeom(t1_lq=(0.15, 0.15, 0.15), t1_drifts=(0.50, 0.15, 0.15),
                       t2_lq=(0.15, 0.15, 0.15), t2_drifts=(0.15, 0.15, 0.20),
                       gap=3.0, screens=(0.30, 1.50, 2.70))
-TARGET = (16.672, 32.527, 2.180, 2.339)   # OP1 dogleg entrance (bx, ax, by, ay)
+TARGET = (16.672, 32.527, 2.180, 2.339)   # a dogleg-entrance-like Twiss on the
+                                          # development geometry; NOT the OP1
+                                          # design of record (see the docstring)
 
 G1_FWD = np.linspace(-0.3, 0, 13)     # T1 first quad [T/m]
 G1_BWD = np.linspace(0.3, 0.9, 13)    # T2 last quad  [T/m]

@@ -14,8 +14,9 @@ Why not the two-triplet crossing route (`thzim.two_triplet`) that the SASE
 branch uses upstream: that route rests on each leg carrying a ROUND beam
 across the gap, and the P2 beam is not one. The chicane leaves it with
 eps_n,x about 4x eps_n,y (space charge and CSR in the bends -- OP4 is the
-collective-dominated point) and a residual dispersion of ~100 mm, so no setting of T1 makes sigma_x = sigma_y in the
-switch region without a hard waist, and the scan finds no crossing. The earlier
+collective-dominated point) and a residual dispersion of ~100 mm, so no
+setting of T1 makes sigma_x = sigma_y in the switch region without a hard
+waist, and the scan finds no crossing. The earlier
 six-knob solve (`crossing_match_api`, retired) got round this by weighting the
 planes with the emittance ratio, i.e. it asked for equal BETA, not equal size,
 which is not a physical roundness at all. Four quads against four numbers is

@@ -72,7 +72,7 @@ FIGS = output_dir(REPO, "tools", "figures")
 
 LAUNCH = (10.29, -15.4, 10.44, -6.3)   # dogleg-exit Twiss (bx, ax, by, ay) the
                                        # beam is re-conditioned to
-TARGET = (1.53, 0.0, 0.83, 0.0)        # OP2 P3: round waist at the undulator
+TARGET = (0.53, 0.0, 0.53, 0.0)        # OP2 P3: round waist at the undulator
 GEOM = QuadrupletGeom()                # lq 0.10, d_in 0.30, d_inter 0.30,
                                        # d_out 0.40 -- the M3 station, 2.0 m
 

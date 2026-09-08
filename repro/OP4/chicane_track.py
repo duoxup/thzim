@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 r"""OP4 chicane: track the matched P1 beam through the compressor to P2.
 
-    P1 (chicane entrance)   B1  d  B2  l2/2 | C | l2/2  B3  d  B4   P2
+    P1 (chicane entrance)  lead  B1  d  B2  l2/2 | C | l2/2  B3  d  B4   P2
 
 The lattice is the OP4 design of record (`ChicaneGeom` below, the same
 instance `m1_quadruplet_match.py` computed its y target from), so nothing is
@@ -20,7 +20,7 @@ Two tracks are run on the same beam and drawn together:
 Figure 1, five panels against s (x blue, y red; dotted = linear reference):
 
   (a) rms size: the total sigma_x and its BETATRON part, dispersion removed.
-      Inside the chicane the dispersive term dominates (eta reaches ~0.26 m),
+      Inside the chicane the dispersive term dominates (eta reaches ~0.34 m),
       so the total says nothing about the optics; the betatron size is what
       the space charge acts on.
   (b) the statistical dispersion eta(s), closing to its exit residual.
@@ -85,7 +85,7 @@ def print_report(label, r, ref=None):
           f"by={r['beta_y']:.3f} ay={r['alpha_y']:+.3f}")
 
 
-def figure_evolution(evo, evo0, lattice, collective):
+def figure_evolution(evo, evo0, lattice, physics):
     """The compressor, tracked: sizes, dispersion, emittance, compression."""
     from ocelot.gui.accelerator import plot_elems
 
@@ -129,7 +129,7 @@ def figure_evolution(evo, evo0, lattice, collective):
     ax_e.set_ylabel(r"$\epsilon_n$ [$\mu m$]")
     ax_e.legend(loc="upper left", fontsize=7, framealpha=0.85)
     ax_e.set_title("(c) normalised emittance "
-                   f"({'SC + CSR' if collective else 'collective effects OFF'})",
+                   f"({physics})",
                    fontsize=10)
 
     ax_z.plot(s, evo["sig_z"] * 1e3, color=C_Z, lw=1.5, ls="-",
@@ -194,6 +194,8 @@ def main():
     energy_gev = beam_energy_gev(dist)
     lattice = build_lattice(CHICANE)
     collective = SC or CSR
+    physics = (" + ".join(n for n, on in (("SC", SC), ("CSR", CSR)) if on)
+               or "collective effects OFF")
 
     print(CHICANE.summary())
     print(f"  R56 from the Ocelot map at {energy_gev*1e3:.2f} MeV: "
@@ -242,7 +244,7 @@ def main():
           f"{evo['sig_y'].max()*1e3:.2f} mm; peak eta {evo['eta'].max()*1e3:.1f} mm")
 
     apply_style()
-    save(figure_evolution(evo, evo0, lattice, collective), FIGS,
+    save(figure_evolution(evo, evo0, lattice, physics), FIGS,
          "fig_OP4_chicane_track")
     save(figure_lps(as_ocelot(dist), pa), FIGS, "fig_OP4_chicane_lps")
     plt.show()

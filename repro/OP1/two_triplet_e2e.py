@@ -11,10 +11,13 @@ Why the gradients and not the (g1_fwd, g1_bwd) that were scanned: **a g1 does
 not determine the lattice.** The round solve at a fixed g1 has several branches,
 and which one it reaches depends on the seed. The scan finds the right one by
 continuity from its neighbours; a cold solve at the same g1 has nothing to be
-continuous with. At g1_bwd = +0.3542 that difference is T2 = (-0.579, +0.582,
-+0.354) T/m from the scan against (+0.357, +5.648, +0.354) cold -- a 106 1/m^2
-quadrupole, a free-screen residual of 180 % against 0.00 %, and sigma_y blowing
-up to 35 mm past T2. Copying the gradients removes the ambiguity. Four panels against s, x blue and y red:
+continuous with. On an earlier OP1 crossing, at g1_bwd = +0.3542, that
+difference was T2 = (-0.579, +0.582, +0.354) T/m from the scan against
+(+0.357, +5.648, +0.354) cold -- a 106 1/m^2 quadrupole, a free-screen
+residual of 180 % against 0.00 %, and sigma_y blowing up to 35 mm past T2.
+Copying the gradients removes the ambiguity.
+
+Four panels against s, x blue and y red:
 
   (a) normalised emittance -- what the section costs the beam
   (b) beta, with the dogleg entrance target marked; the title carries Bmag,
@@ -89,7 +92,7 @@ GEOM = TwoTripletGeom(t1_lq=(0.10, 0.10, 0.10), t1_drifts=(0.30, 0.30, 0.30),
 # SC-corrected crossing (`SC_SCAN = True`, `SC_KNOBS = False`), default:
 T1_G = (-0.2647, +0.5131, -0.2649)
 T2_G = (-0.6401, +0.7404, +0.2494)
-     
+
 SCREEN_PAIR = (0, -1)     # must match the scan, so the residual means the same
 
 SC = True                 # space charge in the e2e track AND in the screen

@@ -66,9 +66,10 @@ Check off each item as it is migrated. Rules that apply to every code file:
       them every plane agrees to the printed digits (the compressor stage
       alone reproduced `dogleg_track.py` bit for bit throughout). So the
       SASE M1 crossings are sensitive at the level that matters for the peak
-      current, to both the SC mesh and a 0.3 % gradient error; a convergence
-      check of the two-triplet e2e at 63^3 / 0.02 m is worth doing before the
-      design is frozen. Remaining, definitional difference: the driver
+      current, to both the SC mesh and a 0.3 % gradient error (a mesh
+      convergence study on the 50k demo beams would not be meaningful; it
+      belongs to the full-statistics runs). Remaining, definitional
+      difference: the driver
       reports dispersion-corrected Twiss, the match scripts ocelot's
       projected one, so at P3 the driver's Bmag_x reads 1.003 (OP1) and
       1.010 (OP2, where beta_x* = 0.53 m and the 7 mm residual eta counts)
@@ -301,16 +302,22 @@ Check off each item as it is migrated. Rules that apply to every code file:
       selected design values and the ordering it encoded now live in the
       per-OP reproduction scripts and design notes. Nothing was left for a
       module.
-- [~] `utils.py` — holds `apply_style` / `output_dir` / `save` (the package-side
-      copy of `tools/plt_style.py`, duplicated on purpose so tools/ scripts stay
-      runnable without installing thzim; reconcile if that stops mattering) and the beam
+- [x] `utils.py` — holds `apply_style` / `output_dir` / `save` (the package-side
+      copy of `tools/plt_style.py`, duplicated on purpose so the standalone
+      sizing tools stay runnable without installing thzim; the demo tools
+      import `thzim.utils`) and the beam
       rigidity helpers `M_E_GEV` / `brho` / `k_of_g` / `g_of_k`, consolidated
       here from the separate copies in `chicane.py`, `dogleg.py` and
       `match/triplet_round.py` (the first two re-export them, so their public
       API is unchanged). matplotlib is imported lazily so the rigidity helpers
-      stay cheap. Still to inline from xtils: `new_subplots`,
-      `save_figure_auto_date`
-- [ ] `__init__.py` — export the public API once modules land
+      stay cheap. The xtils helpers (`new_subplots`, `save_figure_auto_date`)
+      turned out not to be needed: nothing in the package uses them.
+- [x] `__init__.py` — exposes the submodules and the few cross-cutting,
+      collision-free names every script imports (`apply_style` / `output_dir`
+      / `save`, `as_ocelot` / `beam_energy_gev`, `track_compressor` /
+      `beam_report`, `RECORDS` / `get_record`, `M_E_GEV` / `brho`). The
+      geometry classes, `build_lattice`, `element_spans` and `bmag` collide
+      across modules and stay under their module.
 
 ## Reproduction — `repro/`
 
@@ -382,9 +389,10 @@ Check off each item as it is migrated. Rules that apply to every code file:
 - [x] `tools/bunch_compression_scan.py` ← merge of `bunch_compression_scan_v5.py` (FWHM axis)
       and `bunch_compression_scan_sigma_z_v1.py` (sigma_z axis, conventions/branches).
       Axis is now sigma_z,b; the colour map is labelled `sigma_pz/pz0` to match what it
-      computes (was "energy spread"); `C_LIGHT = 3e8` → `scipy.constants.c`; xtils and
-      figure saving removed. Extended to a 2×2 panel per OP with the measured beam
-      (`data/OP*_50k.dist`, via partdist `cor_pz`) overlaid.
+      computes (was "energy spread"); `C_LIGHT = 3e8` → `scipy.constants.c`; xtils
+      removed, figures saved through `plt_style.save`. Extended to a 2×2 panel per OP
+      with the measured beam overlaid: the values are seeded in the settings block
+      (read once from `data/OP*_50k.dist` with `measure_beam()`, the only partdist use).
 - [x] `tools/bunch_compression_yield.py` — new; fixed-spread forward map
       (given R56, what peak current comes out). Shares the physics layer with
       `bunch_compression_scan.py`.
@@ -413,16 +421,12 @@ Check off each item as it is migrated. Rules that apply to every code file:
       OP2 undulator waist 0.53 m) but on the real OP2 P0 beam re-conditioned by
       `partdist.match_twiss_xy` instead of a synthetic Gaussian — which is why
       `make_matched_beam` did not need migrating. Linear check on that beam:
-      k1 = (+19.3, −32.9, +34.4, −100.8) 1/m², the same family as the as-built
-      OP2 M3 (22.8, −34.1, 34.1, −117.0); peak beta 31 / 57 m. The peak-current
+      k1 = (+19.3, −32.9, +34.4, −100.8) 1/m², the same family as the upstream
+      as-built OP2 M3 (22.8, −34.1, 34.1, −117.0) and as this package's own
+      (`record.py`: +23.3, −34.1, +33.9, −126.6); peak beta 31 / 57 m. The peak-current
       scan (`_current_scan.py`, "Q4 is the sensitive knob, near-linear in I")
       is NOT reproduced: its conclusion is recorded in `thzim.quadruplet`'s
       docstring and the necessity of the SC layer is not in question.
-      Still to do: the remaining per-OP repro scripts (M3 for
-      OP1/OP2 needs the dogleg-exit beam, i.e. the seg2 tracking runner
-      first). The P3 undulator targets are an FEL-side CHOICE with no
-      derivation script; record each choice in its executable script when it
-      lands.
 
 ## Docs
 
@@ -431,8 +435,9 @@ Check off each item as it is migrated. Rules that apply to every code file:
       (sizing, achromat, entrance Twiss, ki choice), the R56 geometric-vs-tracked
       bookkeeping, and the OP1/OP2 design of record. Companion chapter for the
       chicane still to write.
-- [ ] `docs/IM_layout.png` ← root `IM_layout.png`
-- [ ] Root `README.md`: fill install/quickstart
+- [ ] `docs/IM_layout.png` ← py4pitz root `IM_layout.png` (not in this
+      repository yet; `docs/overview.md` will reference it)
+- [x] Root `README.md`: install/quickstart filled
 - [x] `data/README.md`: define the supplied 50k P0 beams as the workflow inputs
 - [x] `data/OP{1..4}_50k.dist` — canonical P0 beams, in git (`.gitignore` carries an
       explicit `!data/OP*_50k.dist` exception to the blanket `*.dist` rule)
@@ -453,4 +458,6 @@ from the supplied `data/OP{1..4}_50k.dist` files.
 
 ## Companion repository (published separately)
 
-- [ ] `partdist` — the only external package this one imports
+- [ ] `partdist` — the only dependency not on PyPI (everything else --
+      numpy, scipy, matplotlib, scienceplots, ocelot-collab -- is declared in
+      `pyproject.toml`)

@@ -23,10 +23,11 @@ exit, P3 undulator entrance.
      to see and verify the lattice it produced.
 
   OP1 and OP2 share the dogleg hardware and, because Ocelot's `k1` is geometric
-  and the bend is given by angle, its optics as well — the two scans agree
-  column for column. They differ in entrance/exit interface-drift allocation,
-  in the gradients in T/m, in the R56 velocity term, and in `ki`: OP1's −38
-  was hand-set, OP2's −22 is the scan optimum. See `docs/dogleg_design.md`.
+  and the bend is given by angle, its optics as well — `ko`, the peak betas
+  and the score agree at every ki. They differ in entrance/exit interface-drift
+  allocation (which moves the plane the entrance Twiss is quoted at), in the
+  gradients in T/m, in the R56 velocity term, and in `ki`: OP1's −38 was
+  hand-set, OP2's −22 is the scan optimum. See `docs/dogleg_design.md`.
 
   Then the section that DELIVERS that entrance Twiss, over
   `thzim.two_triplet` — two quad stations with the switched-off chicane
@@ -49,7 +50,7 @@ exit, P3 undulator entrance.
 
   OP2 runs the same section at 2.5x the rigidity with a P0 beam that arrives
   converging at 0.10 mm instead of diverging at 2.3 mm, so its gradients are
-  ~10x OP1's and its backward leg is steep (the scan steps it by 0.02 T/m).
+  ~10x OP1's and its backward leg is steep (the scan steps it by 0.03 T/m).
   With its entrance marker at the first dogleg bend (`d_in = 0`), OP2's useful
   crossing is on the negative T2 branch near `g1_bwd = -5.6 T/m`. Its selected
   SC crossing has a 0.42 % independent-screen residual and 2.0 % roundness
@@ -105,8 +106,9 @@ exit, P3 undulator entrance.
 - `run_line.py` — the P0 → P3 driver. Rebuilds one OP's whole line from
   `thzim.record` (the design of record as data: geometry, SC-matched
   strengths, P3 target) and tracks it section by section with SC everywhere
-  and CSR in the compressor. Writes `outputs/OP<n>/line/p{1,2,3}.ast`, a
-  per-plane `summary.json` and the whole-line evolution figure. It solves
+  and CSR in the compressor. Writes `outputs/OP<n>/line/p{1,2,3}.ast` and a
+  per-plane `summary.json` there, and the whole-line evolution figure to
+  `outputs/OP<n>/figures/`. It solves
   nothing: the per-OP scripts above are where each number is derived, and
   a value changed there has to be carried into `thzim/record.py`.
 
