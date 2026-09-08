@@ -43,7 +43,7 @@ A curve can have GAPS: a round solution does not exist for every g1, and
 that the crossing can land on a segment that means nothing.
 
 Space charge: both leg scans track with SC (running the backward leg linearly
-and reflecting its SC displacement was tried upstream and did not give a better
+and reflecting its SC displacement was tried and did not give a better
 crossing). The round knobs are solved linearly here, which is defensible in THIS
 regime -- 39.5 MeV through 2.1 m, worst roundness consequence 1.6 %, see
 `demo_triplet_round_transport.py`, and 0.6 % on OP1's real section (1 nC,
@@ -58,7 +58,7 @@ envelopes then come from the analytic transport and the panel titles say so.
 
 Case: OP1's P0 beam matched onto a dogleg-entrance-like Twiss. Neither the
 target nor the section geometry is the design of record: both are the
-development case the route was built against upstream (the real OP1 target,
+development case the route was built against (the real OP1 target,
 (10.80, +26.19, 1.73, +2.09), and section are in `repro/OP1/two_triplet_scan.py`).
 This script exercises the method; that one applies it.
 

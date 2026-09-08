@@ -39,10 +39,6 @@ is ocelot's 1-D projected model (`CSR`, `n_bin` longitudinal bins). Neither is
 changed here. The conversion from partdist goes through `thzim.triplet.
 as_ocelot`, which centres `tau` -- see its docstring for why that matters to
 the field solvers.
-
-Migrated from the tracking half of the earlier chicane study implementation
-(`track_chicane`, `Monitor`); generalised to take any lattice so the dogleg
-uses it too. See MIGRATION.md.
 """
 
 import contextlib

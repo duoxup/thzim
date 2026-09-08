@@ -43,9 +43,6 @@ which drops the velocity term -L_tot/(beta gamma)^2. That approximation is
 accepted by design, since the dogleg only needs an approximate R56 (its peak
 current is trimmed afterwards with the injector chirp). Use
 rho_for_r56_exact() when the velocity term is wanted.
-
-Migrated from the earlier dogleg design implementation; see MIGRATION.md for
-the differences.
 """
 
 from dataclasses import dataclass
@@ -441,8 +438,8 @@ def design_dogleg(geom, ki_scan=None, energy_gev=0.0395, emit_ratio=1.0):
     smallest.
 
     `emit_ratio` = eps_y/eps_x of the beam that will be sent through. The
-    default 1.0 scores on max(peak_beta_x, peak_beta_y) -- the original,
-    distribution-free behaviour. Passing the measured ratio makes this layer
+    default 1.0 scores on max(peak_beta_x, peak_beta_y), the purely optical,
+    distribution-free criterion. Passing the measured ratio makes this layer
     agree with the downstream crossing match, whose roundness residual already
     weights the planes by it; leaving it at 1.0 keeps the whole dogleg design
     independent of any particle distribution.

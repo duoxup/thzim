@@ -15,10 +15,10 @@ branch uses upstream: that route rests on each leg carrying a ROUND beam
 across the gap, and the P2 beam is not one. The chicane leaves it with
 eps_n,x about 2x eps_n,y (space charge and CSR in the bends) and a residual
 dispersion of ~14 mm, so no setting of T1 makes sigma_x = sigma_y in the
-switch region without a hard waist, and the scan finds no crossing. The earlier
-six-knob solve (`crossing_match_api`, retired) got round this by weighting the
-planes with the emittance ratio, i.e. it asked for equal BETA, not equal size,
-which is not a physical roundness at all. Four quads against four numbers is
+switch region without a hard waist, and the scan finds no crossing. A joint
+six-knob solve could get round this by weighting the planes with the
+emittance ratio, i.e. by asking for equal BETA rather than equal size, but
+that is not a physical roundness at all. Four quads against four numbers is
 a square problem and needs no such assumption. Switching off the two nearest
 P2 rather than any other pair costs nothing in the linear solve (the peak
 betas are within a metre of the alternative) and keeps the powered quads

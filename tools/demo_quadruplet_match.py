@@ -30,10 +30,10 @@ and y red:
   (c) rms size
   (d) the lattice, drawn by ocelot
 
-The case is the OP2 final focus: the dogleg-exit Twiss (10.29, -15.4, 10.44,
--6.3) onto the undulator round waist beta* = 0.53 m, the same numbers the
-original study's demos used -- but on a REAL beam rather than a synthetic
-Gaussian: the OP2 P0 distribution (1 nC, 40 MeV) re-conditioned to the launch
+The case is the OP2 final focus: a representative dogleg-exit Twiss (10.29,
+-15.4, 10.44, -6.3) onto the undulator round waist beta* = 0.53 m -- on a REAL
+beam rather than a synthetic Gaussian: the OP2 P0 distribution (1 nC, 40 MeV)
+re-conditioned to the launch
 Twiss by `partdist.match_twiss_xy`, which is symplectic per plane and so keeps
 the emittance and the longitudinal profile exactly. Note the current is P0's,
 not the 200 A the compressed beam would carry, so the space-charge shift here is

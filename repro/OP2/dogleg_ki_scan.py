@@ -44,10 +44,10 @@ entrance-Twiss columns are the same optics quoted 0.2 m further along and
 read differently from OP1's.
 
 The scan is therefore not re-derivation for its own sake -- it is the check that
-the shared hardware really is shared, and it is where OP2's as-built `ki` comes
-from. Unlike OP1, whose `ki = -38` was set by hand, OP2 was built at whatever
-this scan returns (`design_dogleg` in the original pipeline ran exactly this
-loop), so the winner marked below IS the design of record.
+the shared hardware really is shared, and it is where OP2's `ki` comes from.
+Unlike OP1, whose `ki = -38` was set by hand, OP2 was built at whatever this
+scan returns (`design_dogleg` runs exactly this loop), so the winner marked
+below IS the design of record.
 
 Run:  python dogleg_ki_scan.py     (needs `pip install -e .` at the repo root)
 Next: dogleg_forward.py, with `ki` set to the value chosen here.

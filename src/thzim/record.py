@@ -25,11 +25,19 @@ The line has three sections, joined at the interface planes:
 Each section also records the SPACE-CHARGE TRACKING SETTINGS it was designed
 under (navigator step, SC mesh), because they are part of the result: the
 two-triplet crossings were selected on 31^3 / 0.05 m tracks, the quadruplet
-re-matches and the compressor runs on 63^3 / 0.02 m, and re-tracking OP2's
+re-matches and the compressor runs on 63^3 / 0.02 m. Re-tracking OP2's
 two-triplet section at 63^3 / 0.02 m moved its P2 peak current from 213 to
-335 A (MIGRATION.md) -- the compression sits near
-its knee and feels the transverse conditions through space charge. A driver
-that wants to reproduce the design must use each section's own settings.
+335 A, and converting its gradients with the nominal energy instead of the
+beam's (see below) still left 241 A -- the compression sits near its knee and
+feels the transverse conditions through space charge. A driver that wants to
+reproduce the design must use each section's own settings and energy; with
+both, `repro/run_line.py` reproduces every per-OP script's planes to the
+printed digits (a mesh convergence study on the 50k beams would not be
+meaningful; it belongs to full-statistics runs). One definitional difference
+remains: the driver reports dispersion-corrected Twiss, the match scripts
+ocelot's projected one, so at P3 the driver's Bmag_x reads 1.003 (OP1) and
+1.010 (OP2, where beta_x* = 0.53 m and the 7 mm residual eta counts) against
+the scripts' 1.000.
 
 Strength conventions follow the module that solved them: the two-triplet
 sections carry GRADIENTS [T/m], and the k1 the lattice is built with comes

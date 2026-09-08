@@ -60,8 +60,6 @@ conversion) and the space-charge track. Same situation as `thzim.dogleg`.
 Beams are partdist distributions here as everywhere in the package; the SC layer
 converts to ocelot once, internally. Building a beam is the caller's job -- this
 module matches beams, it does not manufacture them.
-
-Migrated from the earlier four-quadrupole implementation; see MIGRATION.md.
 """
 
 import copy
@@ -271,6 +269,12 @@ def solve_linear_match(geom, launch, target, energy_gev=0.0395, n_random=40,
     docstring for why the multi-start is not optional. Raises if the geometry
     admits no solution at all. `energy_gev` does not affect the k1 -- it only
     labels the gradients.
+
+    The tie-break is DEGENERATE when the peak beta sits at the exit: every
+    exact solution then shares peak beta_x = the target (the OP3/OP4 M1 case,
+    30 m), and which of them wins can change with the last decimals of the
+    launch Twiss. All of them are valid matches; do not expect the k1 to be
+    stable under small changes of the inputs there.
     """
     rng = np.random.default_rng(seed)
     seeds = [[10, -10, 10, -10], [-10, 10, -10, 10], [8, -6, 6, -8],

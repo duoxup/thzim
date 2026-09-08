@@ -195,8 +195,8 @@ The two columns differ, then, for one reason only: they were built at different
 
 ### The two operating points made opposite choices of `ki`
 
-OP2 was built at whatever Stage D returns — the original pipeline called
-`design_dogleg()`, which runs exactly this scan — so its `ki = −22 m⁻²` **is**
+OP2 was built at whatever Stage D returns — `design_dogleg()` runs exactly
+this scan — so its `ki = −22 m⁻²` **is**
 the min-peak choice at `emit_ratio = 1`: the two planes balance there at
 `peak beta = (11.70, 11.29) m`.
 
@@ -238,10 +238,10 @@ scripts run against the repository alone.
 
 ## Open items
 
-- The stale `rho` values 0.577 (Study E, map-based) and 0.458 predate the design
-  of record; their pipeline is superseded and deliberately not migrated. No file in this
-  repository quotes them — noted here only so the lineage 0.577 → 0.458 → 0.542
-  is not rediscovered as a discrepancy.
+- The `rho` values 0.577 (map-based) and 0.458 (recalibrated on tracked
+  currents) appeared in earlier iterations of this design and may survive in
+  old notes; the design of record is 0.542 m and no file in this repository
+  quotes the others.
 - OP1's hand-set `ki = −38` against the scan optimum: whether a vertical
   aperture drove it is not recorded. The upstream match now exists for both
   points (`two_triplet_scan.py`), so moving OP1 to the optimum is a re-run of

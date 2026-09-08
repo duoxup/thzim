@@ -74,9 +74,6 @@ GRADIENTS [T/m] -- the machine setting -- converted to geometric k1 through the
 beam rigidity. And the condition being solved is a property of the injected
 beam's covariance, so a real distribution always enters. Both are deliberate:
 this is the layer where the design meets an actual bunch.
-
-Migrated from the earlier round-triplet implementation; see MIGRATION.md for
-the differences.
 """
 
 import warnings

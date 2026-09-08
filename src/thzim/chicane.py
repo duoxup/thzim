@@ -36,8 +36,7 @@ the entrance-Twiss problem into a hard solve and a soft choice:
 
 Nothing in this module reads a particle distribution.
 
-Migrated from the earlier chicane study implementation; see MIGRATION.md for
-the differences. Its SC/CSR tracking layer lives in `thzim.compressor`, shared
+The SC/CSR tracking through the chicane lives in `thzim.compressor`, shared
 with the dogleg.
 """
 

@@ -20,8 +20,3 @@ Each file contains 50k macroparticles and is about 5.2 MB. The files are
 tracked in git and used directly by the beamline design, matching and tracking
 scripts. Comparisons between working points should use these same canonical
 inputs so that particle statistics are consistent.
-
-## Naming note
-
-These were called `case1`–`case4` in the original research repository
-(`py4pitz`); `OP<n>` maps one-to-one onto the old `case<n>`.

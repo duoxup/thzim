@@ -44,15 +44,15 @@ into a 3 m gap), reading the middle screen:
 The screens not used to form the crossing are what tell them apart, and it is
 not a close call. `solve_crossing` scans every screen, forms the crossing from
 `screen_pair`, and picks the candidate whose remaining screens agree
-(`pick="consistent"`, the default). Taking the first crossing -- what the
-upstream API did -- happens to be right here and is not right in general.
+(`pick="consistent"`, the default). Taking the first crossing happens to be
+right here and is not right in general.
 
 ## Where space charge is on, and where it is not -- these are results, not defaults
 
   leg scans      SC ON, BOTH legs.  Not negotiable. It was tested: an
                  "anti-distortion" variant that ran the backward leg linearly
                  and reflected its SC displacement through the linear curve
-                 (a retired upstream study, see MIGRATION.md) did NOT give a better
+                 was tried and did NOT give a better
                  crossing. The screen sizes are what is being matched on, and
                  space charge changes them, so both legs must see it.
   round knobs    LINEAR by default, but CHECK -- and the check is free. g2 and
@@ -61,8 +61,8 @@ upstream API did -- happens to be right here and is not right in general.
                  1.6 % worst deviation at 39.5 MeV through 2.1 m
                  (`tools/demo_triplet_round_transport.py`). On the present
                  two-triplet geometry the chosen OP1 crossing is within 4.5 %.
-                 Re-solving under space charge did not pay for itself upstream
-                 either (another retired study). Still, `leg_scan` reports
+                 Re-solving under space charge was tried too and did not pay
+                 for itself. Still, `leg_scan` reports
                  `sc_roundness_dev` per scan point, read straight off the track
                  it already ran, and `sc_knobs=True` re-solves g2 and g3 under
                  space charge (seeded from the linear answer) if that number
@@ -83,9 +83,10 @@ module and never reaches the caller. Gradients go in and come out as
 
 ## Status
 
-This route SUPERSEDES the earlier six-knob joint least squares over two quad
-groups (retired upstream, not in this package) and is the adopted OP1/OP2
-upstream-matching route. See MIGRATION.md for the design-change history.
+This is the adopted route for the SASE branch's M1 (P0 -> dogleg entrance).
+A joint six-knob least squares over the two triplets solves the same problem
+but hides the choice between its several solutions; the scan puts them on a
+figure instead.
 
 Beams are partdist distributions; ocelot conversion happens internally.
 """

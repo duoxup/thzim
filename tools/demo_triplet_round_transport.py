@@ -25,12 +25,11 @@ worst fractional |sigma_x - sigma_y| anywhere in the exit drift.
 
 ## Why the right panel re-uses the LINEAR knobs
 
-That is the production convention, not a shortcut. In the original study only
-TWO things ever ran with space charge on: the g1-scan screen sizes that locate
-the crossing, and the final end-to-end validation. g2 and g3 came from the
-linear solve throughout (its crossing driver never re-solved them under SC,
-and a dedicated study -- retired, see MIGRATION.md -- checked that doing so
-does not change the delivered Twiss). The physical reason is
+That is the production convention, not a shortcut. In the two-triplet route
+only TWO things run with space charge on: the g1-scan screen sizes that locate
+the crossing, and the final end-to-end validation. g2 and g3 come from the
+linear solve throughout (re-solving them under SC was checked not to change
+the delivered Twiss). The physical reason is
 visible in this figure: g1 sets the ABSOLUTE size at the screens, which space
 charge inflates directly, while g2 and g3 enforce a RATIO between the planes --
 and the SC kick of an already-round beam is symmetric, so it pushes both planes

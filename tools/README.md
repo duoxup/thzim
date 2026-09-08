@@ -67,8 +67,8 @@ method demonstrations, not simulations.
   Colour = g1, solid = sigma_x, dashed = sigma_y. The printed `lin dev` /
   `sc dev` columns are the worst fractional |sigma_x − sigma_y| anywhere in the
   exit drift, and the point of the figure is that the second stays small at the
-  first's knobs — which is why the original study never solved g2, g3 under
-  space charge. Set `SC_KNOBS = True` to test that claim (minutes per g1). Needs
+  first's knobs — which is why the round knobs are solved linearly throughout
+  the package. Set `SC_KNOBS = True` to test that claim (minutes per g1). Needs
   `thzim` installed plus `partdist`; builds its own Gaussian beam, so no data
   file is required.
 - `demo_two_triplet_scan.py` + `demo_two_triplet_e2e.py` — demo / smoke test
@@ -104,6 +104,6 @@ method demonstrations, not simulations.
   post-correction Bmag. Case: the OP2 final focus, dogleg-exit Twiss onto the
   undulator round waist beta* = 0.53 m, on the OP2 P0 beam re-conditioned to
   the launch Twiss by `partdist.match_twiss_xy` (a real beam, not a synthetic
-  Gaussian — the original study's demos built their own). `SC = False` is the
+  Gaussian). `SC = False` is the
   seconds-long look at whether the geometry admits a solution at all. Needs
   `thzim` installed plus `partdist`, and `data/OP2_50k.dist`.

@@ -8,8 +8,7 @@ separately.
 
 > **Status:** the importable optics package, the canonical P0 inputs, the
 > per-OP design scripts for all three sections (M1, compressor, M3) and the
-> P0 → P3 driver are in place for OP1–OP4. What remains (overview document,
-> a few library clean-ups) is tracked in [MIGRATION.md](MIGRATION.md).
+> P0 → P3 driver are in place for OP1–OP4.
 
 ## Repository map
 
