@@ -7,6 +7,8 @@ Core modules:
 - ``thzim.triplet``  — round-transport triplet solver (the matching building block)
 - ``thzim.maps``     — single-plane 2x2 linear transfer maps (numpy-only)
 - ``thzim.utils``    — figure style, and the beam-rigidity helpers
+- ``thzim.compressor`` — SC + CSR tracking through either compressor, with
+  the along-s beam monitor and the exit-plane report
 
 Two modules match a beam onto a target Twiss, by different means:
 

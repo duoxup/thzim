@@ -12,7 +12,7 @@ the supplied P0 particle distributions through middle-optics beam transport
 
 | Path | Category | Content |
 |---|---|---|
-| `src/thzim/` | Toolchain | Importable library: chicane, dogleg, maps, quadruplet, triplet, two_triplet, utils |
+| `src/thzim/` | Toolchain | Importable library: chicane, compressor, dogleg, maps, quadruplet, triplet, two_triplet, utils |
 | `repro/02_beamline/` | Reproduction | Middle optics P0 → P3 design and tracking per working point |
 | `repro/03_fel/` | Reproduction | Genesis4 FEL runs for OP1–OP4 (local + HTCondor) |
 | `resources/` | Static inputs | Genesis undulator lattices |

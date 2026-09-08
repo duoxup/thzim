@@ -13,7 +13,7 @@ Check off each item as it is migrated. Rules that apply to every code file:
 
 ## Toolchain — `src/thzim/`
 
-- [~] `chicane.py` ← `chicane_design/no_quad/chicane_study_lib.py`. Linear layer
+- [x] `chicane.py` ← `chicane_design/no_quad/chicane_study_lib.py`. Linear layer
       done: footprint geometry, the `ChicaneGeom` dataclass,
       `chicane_seq`/`build_lattice`, `r56_z_exact` and `matched_y` (verified
       bit-identical to the original). Changes: `ChicaneGeom` is new, mirroring
@@ -30,8 +30,26 @@ Check off each item as it is migrated. Rules that apply to every code file:
       `BX_SOFT` deliberately NOT migrated: that wrapper bundled the y hard solve
       with the free x choice, which the two-layer split makes misleading —
       `beta_x` belongs to a tracking scan, not to a linear solver.
-      Still to migrate: the SC/CSR tracking layer (`track_chicane`, `Monitor`,
-      beam loading) and the `beta_x` scan, whose scripts were not kept upstream.
+      The SC/CSR tracking layer (`track_chicane`, `Monitor`) went to
+      `compressor.py` (below), generalised to any lattice so the dogleg shares
+      it; the `beta_x` scan is `repro/02_beamline/OP{3,4}/chicane_beta_x_scan.py`.
+      Beam loading is partdist's job. Nothing is left to migrate here.
+- [x] `compressor.py` ← the tracking half of `chicane_design/no_quad/
+      chicane_study_lib.py` (`track_chicane`, `Monitor`, `emit_proj`,
+      `emit_corr`, `peak_current`) and the `track_seg` / `report` pair of
+      `beamline_design/segments.py`. One `track_compressor(lattice, dist, sc,
+      csr)` for BOTH compressors: the chicane and the dogleg ask the same
+      questions of a fixed lattice, so a per-compressor tracker would have
+      been the same code twice. `BeamMonitor` records at every navigator step
+      (sizes total and betatron, statistical eta, dispersion-corrected eps_x,
+      eps_y, sigma_z, sigma_dp, mean dp, peak current) and adds the exit plane
+      explicitly, since the navigator's last step stops short of the end
+      marker. `beam_report` is the scalar exit summary (the same quantities
+      plus Twiss and chirp). The partdist -> ocelot boundary is
+      `triplet.as_ocelot`, so the tau-centring fix applies here too. Verified
+      on OP3 against the `chicane_beta_x_scan.py` convergence table at
+      beta_x = 30 m (2.63 um corrected eps_x and 14 mm residual eta here
+      against 2.61 um / 12.4 mm there on the conditioned beam).
 - [x] `quadruplet.py` ← `match/four_quads_match_api.py`. Verified **bit-identical**
       to the original on two cases (k1, exit Twiss and peak beta all differ by
       exactly 0; gradients by 1e-12, from `scipy.constants` replacing the
@@ -278,6 +296,17 @@ Check off each item as it is migrated. Rules that apply to every code file:
       for both OP3 and OP4. OP4 is the collective-dominated point: 3x the
       charge at half the energy, so the same trade-off costs several um of
       emittance instead of one.
+- [x] `OP{1,2}/dogleg_track.py`, `OP{3,4}/chicane_track.py` — new; the
+      compressor stage P1 -> P2 over `thzim.compressor`, replacing `seg2` of
+      `beamline_design/segments.py`. Each reads `outputs/OP<n>/beams/p1.ast`,
+      rebuilds the lattice from the design of record retained in the script
+      (the dogleg re-solves `ko` from `ki` exactly as the e2e script did, so
+      target and lattice cannot drift apart), runs a linear reference and the
+      SC + CSR track, writes `p2.ast`, and draws the evolution and the
+      longitudinal phase space at P1 / P2. Deliberately not carried over from
+      `segments.py`: the `.npz` beam dumps (ASTRA files via partdist instead,
+      one format at every plane), the 20k subsample and the `chirp_scale` hook
+      (an unused experiment).
 - [x] Separate `knobs/` tables — deliberately dropped. They duplicated values
       without carrying enough lattice context. Geometry and selected strengths
       are kept in the executable per-OP scripts instead.

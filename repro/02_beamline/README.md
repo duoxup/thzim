@@ -56,7 +56,13 @@ exit, P3 undulator entrance.
   deviation; re-solving the round knobs under SC is unnecessary.
 
   The target comes from step 2, so the four scripts are one chain: dogleg
-  design → entrance Twiss → upstream match.
+  design → entrance Twiss → upstream match. Then the compressor itself:
+  5. `OP{1,2}/dogleg_track.py` — reads `p1.ast`, rebuilds the dogleg of
+     record (`ko` re-solved from `ki`, as in step 2) and tracks it with SC +
+     CSR over `thzim.compressor`, next to a linear reference on the same
+     beam. Writes `outputs/OP<n>/beams/p2.ast` and two figures: the
+     evolution (sizes, dispersion, dispersion-corrected emittance,
+     compression) and the longitudinal phase space at P1 and P2.
 
   **Superradiant branch, chicane (OP3, OP4)** — a chicane is achromatic by
   symmetry, so only the entrance Twiss is left, and it splits in two: `y` is an
@@ -74,6 +80,11 @@ exit, P3 undulator entrance.
     OP's own chicane geometry with `lead = 0.2 m`. Runs linear solve + SC
     re-match, then tracks the matched line end to end. An SC run writes
     `outputs/OP<n>/beams/p1.ast`.
+  - `chicane_track.py` — reads `p1.ast` and tracks it through the chicane of
+    record with SC + CSR over `thzim.compressor`, next to a linear reference.
+    Writes `outputs/OP<n>/beams/p2.ast` and the same two figures as the
+    dogleg script. The chicane is achromatic by symmetry, so the residual
+    dispersion it reports is entirely collective.
 
   OP4 is the collective-dominated point (0.6 nC at 21.8 MeV against OP3's
   0.2 nC at 39.9 MeV): the trade-off has the same shape and the same `beta_x`
