@@ -14,7 +14,8 @@ beam (the 1M-particle distributions, a re-optimised injector), or to re-run
 part of the line from a saved plane.
 
 Every interface plane is written as an ASTRA file, so a later section can be
-re-run alone (`--start p2`) and the P3 beam is ready for `repro/03_fel/`.
+re-run alone (`--start p2`) and the P3 beam is the handover to the FEL
+simulation, which is delivered separately.
 The planes are the section boundaries as the design defines them: P1 is the
 compressor's entrance marker (0.2 m before the first chicane bend; the dogleg
 START marker, `d_in` before B1), P2 its exit marker (right after the last
@@ -38,7 +39,7 @@ bends the projected quantities swing with eta and say nothing.
 Usage:
 
     python run_line.py OP3                          # the design, 50k P0 beam
-    python run_line.py OP1 --input /data/OP1_1M.dist --out outputs/OP1/line_1M
+    python run_line.py OP1 --input path/to/OP1_1M.dist --out outputs/OP1/line_1M
     python run_line.py OP4 --start p2               # M3 only, from line/p2.ast
     python run_line.py OP2 --no-sc --no-csr         # the linear reference
 
@@ -91,6 +92,12 @@ def parse_args(argv=None):
 
 
 # --------------------------------- reporting ---------------------------------
+
+def _portable(path):
+    """A path as recorded in summary.json: relative to the repo when inside it."""
+    path = Path(path).resolve()
+    return str(path.relative_to(REPO)) if path.is_relative_to(REPO) else str(path)
+
 
 def plane_report(pa, target=None):
     """`beam_report` plus, when a target is given, the Bmag against it."""
@@ -228,7 +235,7 @@ def main(argv=None):
           f"{'off' if args.no_csr else 'on'}; tracking settings per section "
           f"as recorded{override}; output {out}\n")
 
-    summary = {"op": rec.name, "input": str(src), "start": args.start,
+    summary = {"op": rec.name, "input": _portable(src), "start": args.start,
                "stop": args.stop, "sc": sc, "csr": not args.no_csr,
                "sections": {}, "planes": {}}
     r0 = plane_report(as_ocelot(dist))

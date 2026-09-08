@@ -1,8 +1,10 @@
 # thzim — THz FEL Ideal Machine
 
-Simulation design code for a THz FEL ideal machine: start-to-end workflow from
-the supplied P0 particle distributions through middle-optics beam transport
-(Ocelot) to FEL simulation (Genesis 1.3 v4).
+Design code for the middle optics of a THz FEL ideal machine: from the
+supplied P0 particle distributions (booster exit) through matching and bunch
+compression (Ocelot, space charge + CSR) to the undulator entrance P3. The
+injector upstream of P0 and the FEL simulation downstream of P3 are delivered
+separately.
 
 > **Status:** the importable optics package, canonical P0 inputs, subsystem
 > design studies, and per-OP P0 → P1 matching scripts are in place. Remaining
@@ -14,9 +16,7 @@ the supplied P0 particle distributions through middle-optics beam transport
 |---|---|---|
 | `src/thzim/` | Toolchain | Importable library: chicane, compressor, dogleg, maps, quadruplet, record, triplet, two_triplet, utils |
 | `repro/02_beamline/` | Reproduction | Middle optics P0 → P3 design and tracking per working point |
-| `repro/03_fel/` | Reproduction | Genesis4 FEL runs for OP1–OP4 (local + HTCondor) |
-| `resources/` | Static inputs | Genesis undulator lattices |
-| `tools/` | Toolchain | Command-line utilities (ASTRA → Genesis conversion) |
+| `tools/` | Toolchain | Sizing maps, standalone calculators and demos |
 | `data/` | Data | Canonical 50k-particle P0 distributions for OP1–OP4 |
 | `docs/` | Docs | Machine overview; per-subsystem design notes |
 
@@ -34,14 +34,8 @@ SASE branch (OP1: 1 THz, OP2: 10 THz) and superradiant branch
 pip install -e .
 ```
 
-Companion packages (separate repositories):
-
-- `partdist`
-- `htpipe`
-- `paramstudy`
-- `postpro`
-
-External simulation code: Genesis 1.3 v4 + MPI (FEL).
+Companion package (separate repository): `partdist`, the particle
+distribution I/O and manipulation library every script here reads beams with.
 
 ## Data
 
@@ -68,5 +62,5 @@ python repro/02_beamline/run_line.py OP3          # P0 -> P3 for one working poi
 `run_line.py` rebuilds the line from the design of record (`src/thzim/record.py`)
 and writes the P1/P2/P3 beams and a summary under `outputs/OP3/line/`. The
 per-OP scripts in `repro/02_beamline/` are where each design value is derived;
-see that directory's README for the order. The FEL stage (`repro/03_fel/`) is
-still to be added.
+see that directory's README for the order. The P3 beams are the handover to
+the FEL simulation, which is delivered separately.

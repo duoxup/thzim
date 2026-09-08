@@ -5,7 +5,7 @@ Check off each item as it is migrated. Rules that apply to every code file:
 
 - replace `sys.path.insert(...)` cross-imports with `from thzim import ...`;
 - remove `xtils` usage (`new_subplots`, `save_figure_auto_date` → `thzim.utils`);
-- fix paths to the new layout (`resources/`, `data/`, `repro/`);
+- fix paths to the new layout (`data/`, `repro/`);
 - no absolute paths (`/home/...`, `/afs/...`, `/lustre/...`);
 - **rename `case<n>` → `OP<n>`** (operating point) in identifiers, filenames,
   CLI arguments and prose. The mapping is one-to-one: `case1`→`OP1` … `case4`→`OP4`.
@@ -315,7 +315,8 @@ Check off each item as it is migrated. Rules that apply to every code file:
 ## Reproduction — `repro/02_beamline/`
 
 - [x] `run_line.py` — the P0 → P3 driver, replacing `beamline_design/
-      segments.py` and the tracking half of `fel_design/fel_prep2.py`. It
+      segments.py` (and the P0 → P3 tracking the FEL-side prep script
+      repeated). It
       solves NOTHING: `thzim.record` (new) holds each OP's line as data --
       section geometry, the SC-matched strengths the per-OP scripts derived,
       the P3 target -- and the driver rebuilds the three lattices from it and
@@ -328,8 +329,8 @@ Check off each item as it is migrated. Rules that apply to every code file:
       where the result is kept; a value changed in a script must be carried
       into the record by hand -- that duplication is deliberate and small.
       Not carried over from `segments.py`: the `.npz` dumps and the
-      `chirp_scale` hook (unused); nor from `fel_prep2.py`: the Genesis
-      window bookkeeping, which belongs to `repro/03_fel/fel_prep.py`.
+      `chirp_scale` hook (unused). Everything past P3 is delivered
+      separately.
 - [x] `OP{1,2}/dogleg_ki_scan.py`, `OP{1,2}/dogleg_forward.py` — new; the
       two-step dogleg solve over `thzim.dogleg` (scan the free inner-pair ki,
       then run the chosen one forward). Replaces the short-lived
@@ -371,26 +372,13 @@ Check off each item as it is migrated. Rules that apply to every code file:
       0), (2.58, 0, 0.07, 0), (9.8, 0, 0.006, 0)); matching is on the
       PROJECTED P2 Twiss as in `segments.py`. Each script writes
       `outputs/OP<n>/beams/p3.ast` and prints the P3 longitudinal summary
-      for the Genesis4 input.
+      for the FEL simulation, which is delivered separately.
 - [x] Separate `knobs/` tables — deliberately dropped. They duplicated values
       without carrying enough lattice context. Geometry and selected strengths
       are kept in the executable per-OP scripts instead.
 
-## Reproduction — `repro/03_fel/`
-
-- [ ] `fel_prep.py` ← `fel_design/fel_prep2.py` (rename; the current version)
-- [ ] `fel_run.py` ← `fel_design/fel_run.py`
-- [ ] `fel_analysis.py` ← `fel_design/fel_analysis.py`
-- [ ] `OP{1..4}/<OP>.in` ← `fel_design/case*/` Genesis4 decks
-- [ ] `condor/` ← `beamline_design/condor_fel/` (submit files + `run_fel_case.py`; adapt its README here)
-
-## Resources
-
-- [ ] `resources/lattices/OP{1..4}.lat` ← `data/case*.lat` (single source; FEL OP dirs reference these)
-
 ## Tools
 
-- [ ] `tools/partdist_astra2genesisslices` ← `Scripts/partdist_astra2genesisslices` (only CLI referenced by the pipeline)
 - [x] `tools/bunch_compression_scan.py` ← merge of `bunch_compression_scan_v5.py` (FWHM axis)
       and `bunch_compression_scan_sigma_z_v1.py` (sigma_z axis, conventions/branches).
       Axis is now sigma_z,b; the colour map is labelled `sigma_pz/pz0` to match what it
@@ -458,13 +446,11 @@ superseded pipelines
 (`sr_line.py`, `sase_line.py`, `final_figures.py`, `slides_figs.py`,
 `fel_design/fel_prep.py` v1, `sr_theta_fel.py`, `case*_f1p*/`), chicane study
 scripts and design-principle notes (`chicane_design/no_quad/study_*.py`, `*.md`),
-stale `Scripts/` templates, obsolete `data/*.dist`. Photoinjector optimization
-and its field maps are outside this repository: the workflow starts from the
-supplied `data/OP{1..4}_50k.dist` files at P0.
+stale `Scripts/` templates, obsolete `data/*.dist`. The photoinjector (P0
+beams and their optimisation) and the FEL stage (everything past P3) are
+delivered separately: this package covers the middle optics P0 → P3 and starts
+from the supplied `data/OP{1..4}_50k.dist` files.
 
-## Companion repositories (published separately)
+## Companion repository (published separately)
 
-- [ ] `partdist`
-- [ ] `htpipe`
-- [ ] `paramstudy`
-- [ ] `postpro`
+- [ ] `partdist` — the only external package this one imports

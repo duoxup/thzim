@@ -32,9 +32,9 @@ Two layers, then a track:
 Then the matched line is tracked end to end and drawn (x blue, y red): (a)
 normalised emittance, (b) beta tracked against linear with the target marked
 and Bmag in the title, (c) rms size, (d) the lattice. With `SC = True` the
-tracked P3 distribution is written to `outputs/OP2/beams/p3.ast` for the FEL
-stage, and its longitudinal summary (peak current, bunch length, energy
-spread) is printed for the Genesis4 input.
+tracked P3 distribution is written to `outputs/OP2/beams/p3.ast` as the
+handover to the FEL simulation (delivered separately), and its longitudinal
+summary (peak current, bunch length, energy spread) is printed for it.
 
 Input:  `outputs/OP2/beams/p2.ast` (from `dogleg_track.py`)
 Output: `outputs/OP2/beams/p3.ast`
@@ -163,7 +163,7 @@ def figure_e2e(match, tws, sc):
 
 
 def print_beam(label, r):
-    """One beam's longitudinal and transverse summary, for the FEL stage."""
+    """One beam's longitudinal and transverse summary, for the FEL handover."""
     print(f"  {label:<4s} sig_z={r['sig_z']*1e3:.4f} mm  I_pk={r['I_peak']:.0f} A  "
           f"sig_dp={r['sig_dp']*100:.3f} %  chirp={-r['chirp']:+.2f} /m  "
           f"enx={r['enx']*1e6:.3f} ({r['enx_c']*1e6:.3f} corr) um  "
@@ -233,7 +233,7 @@ def main():
           f"{t1.emit_yn*1e6:.4f} um   (projected)")
     print(f"  beam size  peak ({sx.max()*1e3:.3f}, {sy.max()*1e3:.3f}) mm; "
           f"exit ({sx[-1]*1e3:.3f}, {sy[-1]*1e3:.3f}) mm")
-    print("\nfor the FEL stage (chirp against z, head positive):")
+    print("\nP3 handover summary (chirp against z, head positive):")
     print_beam("P2", r_in)
     print_beam("P3", beam_report(pa_out))
 

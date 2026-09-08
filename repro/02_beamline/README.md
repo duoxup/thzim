@@ -66,7 +66,8 @@ exit, P3 undulator entrance.
   6. `OP{1,2}/m3_quadruplet_match.py` — the final focus: the four-quad M3
      after the dogleg onto the P3 target of record, over `thzim.quadruplet`
      (linear solve + SC re-match + SC track). Writes
-     `outputs/OP<n>/beams/p3.ast`, the input of `repro/03_fel/`.
+     `outputs/OP<n>/beams/p3.ast`, the handover beam for the FEL
+     simulation (delivered separately).
 
   **Superradiant branch, chicane (OP3, OP4)** — a chicane is achromatic by
   symmetry, so only the entrance Twiss is left, and it splits in two: `y` is an
@@ -110,7 +111,7 @@ exit, P3 undulator entrance.
   a value changed there has to be carried into `thzim/record.py`.
 
 Input: `data/OP{1..4}_50k.dist`. Output: per-segment beam dumps and the
-`p3.ast` beams consumed by `repro/03_fel/`.
+`p3.ast` beams handed over to the FEL simulation (delivered separately).
 
 ## Run
 
@@ -118,7 +119,7 @@ The design, one OP at a time, from the canonical 50k P0 beam:
 
 ```bash
 python repro/02_beamline/run_line.py OP3            # 3-8 min per OP with SC
-python repro/02_beamline/run_line.py OP1 --input /path/to/OP1_1M.dist --out outputs/OP1/line_1M
+python repro/02_beamline/run_line.py OP1 --input path/to/OP1_1M.dist --out outputs/OP1/line_1M
 python repro/02_beamline/run_line.py OP4 --start p2  # M3 only, from line/p2.ast
 python repro/02_beamline/run_line.py OP2 --no-sc --no-csr   # linear reference
 ```

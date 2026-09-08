@@ -2,9 +2,6 @@
 
 Standalone CLI utilities used by the workflows.
 
-- `partdist_astra2genesisslices` — convert an ASTRA `.ast` beam into Genesis4
-  sliced-beam HDF5 (`beam.par.h5`). Required by `repro/03_fel/`. Depends on
-  the `partdist` package; implementation is still to be added.
 - `bunch_compression_scan.py` — sizing-stage compressor scan from linear theory:
   required correlated momentum spread over a (σ_z,b, R56) grid, with
   compression-factor contours. One panel per operating point (2×2), each
